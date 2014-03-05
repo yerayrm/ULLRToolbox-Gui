@@ -126,8 +126,19 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.mnu_acerca.menuAction())
 
         self.retranslateUi(MainWindow)
+
+        ### CONECT
         QtCore.QObject.connect(self.act_cerrar, QtCore.SIGNAL("triggered()"), MainWindow.close)
+        QtCore.QObject.connect(self.button_ejecutar, QtCore.SIGNAL("clicked()"), self.someFunc)
+        #button_ejecutar = QtGui.QPushButton("Call someFunc")
+        #button_ejecutar.clicked.connect(self.someFunc)
+        #QtCore.QObject.connect(button_ejecutar, QtCore.SIGNAL('clicked()'), self.someFunc)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def someFunc(self):
+        self.text_resultados.
+        self.edit_ejecutar.setText("hola")
+
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
