@@ -23,9 +23,12 @@ class CustomMainWindow(mw.Ui_MainWindow):
 	def insertCommand(self):
 		comando = self.edit_comandos.toPlainText()
 		self.text_result.append("> " + comando)
+		self.text_result.append("")
+
 
 		def f(x):
-			self.text_result.append(x)
+			#self.text_result.append(x)
+			self.text_result.textCursor().insertText(x)
 		
 		rinterface.set_writeconsole(f)
 		resultado = robjects.r('print('+comando+')')
