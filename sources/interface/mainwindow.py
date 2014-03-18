@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file './forms/mainwindow.ui'
 #
-# Created: Sun Mar 16 18:09:12 2014
+# Created: Tue Mar 18 20:18:05 2014
 #      by: pyside-uic 0.2.13 running on PySide 1.1.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -68,6 +68,9 @@ class Ui_MainWindow(object):
         self.statusbar = QtGui.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        self.toolBar = QtGui.QToolBar(MainWindow)
+        self.toolBar.setObjectName("toolBar")
+        MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
         self.act_abrir = QtGui.QAction(MainWindow)
         self.act_abrir.setObjectName("act_abrir")
         self.act_guardar = QtGui.QAction(MainWindow)
@@ -102,8 +105,6 @@ class Ui_MainWindow(object):
         self.act_cerrar.setObjectName("act_cerrar")
         self.mnu_archivo.addAction(self.act_abrir)
         self.mnu_archivo.addAction(self.act_guardar)
-        self.mnu_archivo.addSeparator()
-        self.mnu_archivo.addAction(self.act_exportar)
         self.mnu_archivo.addSeparator()
         self.mnu_archivo.addAction(self.act_cerrar)
         self.mnu_datos.addAction(self.act_agregado)
@@ -147,6 +148,7 @@ class Ui_MainWindow(object):
         self.mnu_analisis.setTitle(QtGui.QApplication.translate("MainWindow", "Análisis", None, QtGui.QApplication.UnicodeUTF8))
         self.mnu_graficos.setTitle(QtGui.QApplication.translate("MainWindow", "Gráficos", None, QtGui.QApplication.UnicodeUTF8))
         self.mnu_acerca.setTitle(QtGui.QApplication.translate("MainWindow", "Acerca de", None, QtGui.QApplication.UnicodeUTF8))
+        self.toolBar.setWindowTitle(QtGui.QApplication.translate("MainWindow", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
         self.act_abrir.setText(QtGui.QApplication.translate("MainWindow", "Abrir archivo", None, QtGui.QApplication.UnicodeUTF8))
         self.act_abrir.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+O", None, QtGui.QApplication.UnicodeUTF8))
         self.act_guardar.setText(QtGui.QApplication.translate("MainWindow", "Guardar archivo", None, QtGui.QApplication.UnicodeUTF8))

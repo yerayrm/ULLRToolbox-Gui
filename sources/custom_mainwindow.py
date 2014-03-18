@@ -7,7 +7,17 @@ class CustomMainWindow(mw.Ui_MainWindow):
 	def setupUi(self, MainWindow):
 		super(CustomMainWindow, self).setupUi(MainWindow)
 
+		# actions
+		self.act_abrir = QtGui.QAction(QtGui.QIcon('./resources/openIcon.png'), "open", MainWindow)
+		self.act_guardar = QtGui.QAction(QtGui.QIcon('./resources/saveIcon.png'), "save", MainWindow)
+
+		# toolBar
+		self.toolBar.addAction(self.act_abrir)
+		self.toolBar.addAction(self.act_guardar)
+
+		# signals
 		QtCore.QObject.connect(self.button_ejecutar, QtCore.SIGNAL("clicked()"), self.insertCommand)
+
 		# call a method to translate interface
 		self.retranslateUi(MainWindow)
 
@@ -20,11 +30,11 @@ class CustomMainWindow(mw.Ui_MainWindow):
 		newItem = QtGui.QListWidgetItem()
 		self.list_variables.insertItem(5, newItem)
 
+
 	def insertCommand(self):
 		comando = self.edit_comandos.toPlainText()
 		self.text_result.append("> " + comando)
 		self.text_result.append("")
-
 
 		def f(x):
 			#self.text_result.append(x)

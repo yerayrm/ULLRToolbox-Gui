@@ -119,8 +119,6 @@
     <addaction name="act_abrir"/>
     <addaction name="act_guardar"/>
     <addaction name="separator"/>
-    <addaction name="act_exportar"/>
-    <addaction name="separator"/>
     <addaction name="act_cerrar"/>
    </widget>
    <widget class="QMenu" name="mnu_datos">
@@ -162,6 +160,17 @@
    <addaction name="mnu_acerca"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
   <action name="act_abrir">
    <property name="text">
     <string>Abrir archivo</string>
