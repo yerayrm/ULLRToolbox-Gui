@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file './forms/mainwindow.ui'
 #
-# Created: Tue Mar 18 20:18:05 2014
+# Created: Sat Mar 22 21:30:11 2014
 #      by: pyside-uic 0.2.13 running on PySide 1.1.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -103,10 +103,7 @@ class Ui_MainWindow(object):
         self.act_graficos.setObjectName("act_graficos")
         self.act_cerrar = QtGui.QAction(MainWindow)
         self.act_cerrar.setObjectName("act_cerrar")
-        self.mnu_archivo.addAction(self.act_abrir)
-        self.mnu_archivo.addAction(self.act_guardar)
         self.mnu_archivo.addSeparator()
-        self.mnu_archivo.addAction(self.act_cerrar)
         self.mnu_datos.addAction(self.act_agregado)
         self.mnu_datos.addAction(self.act_segmentado)
         self.mnu_datos.addAction(self.act_union)
