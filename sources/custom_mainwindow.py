@@ -58,7 +58,25 @@ class CustomMainWindow(mw.Ui_MainWindow):
 
 
 	def abrirArchivo(self):
-		fileName = QtGui.QFileDialog.getOpenFileName(self.mnu_archivo, "Abrir archivo", "/home", "Archivos de datos (*.txt, *.xls, *.sav, *.Rdata)")
+		fileName, _ = QtGui.QFileDialog.getOpenFileName(self.mnu_archivo, "Abrir archivo", "./samples", "Archivos de datos (*.txt *.xls *.sav *.Rdata)")
+		self.text_result.append("[FICHERO]" + fileName)
+
+		comando = "datos = lee.archivo.fnc('" + fileName + "')"
+		self.text_result.append("> " + comando)
+
+		def f(x):
+			self.text_result.textCursor().insertText(x)
+		
+		rinterface.set_writeconsole(f)
+		backupList = robjects.globalenv.keys()
+		resultado = robjects.r(comando)
+		currentList = robjects.globalenv.keys()
+		
+		if len(backupList) == len(currentList):
+			self.text_result.append(str(resultado))
+
+		rinterface.set_writeconsole(rinterface.consolePrint)
+
 
 
 	def insertCommand(self):
