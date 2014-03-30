@@ -55,27 +55,20 @@ class CustomMainWindow(mw.Ui_MainWindow):
 
 
 
-	def insertVariables(self, MainWindow):
-		newItem = QtGui.QListWidgetItem()
-		self.list_variables.insertItem(5, newItem)
-
-
-
 	def abrirArchivo(self):
 		fileName, _ = QtGui.QFileDialog.getOpenFileName(self.mnu_archivo, "Abrir archivo", "./samples", "Archivos de datos (*.txt *.xls *.sav *.Rdata)")
-
 		comando = "datos = lee.archivo.fnc('" + fileName + "')"
 
-		#def f(x):
-		#	self.text_result.textCursor().insertText(x)
-		
-		#rinterface.set_writeconsole(f)
 		backupList = robjects.globalenv.keys()
 		resultado = robjects.r(comando)
 		currentList = robjects.globalenv.keys()
 
-		#rinterface.set_writeconsole(rinterface.consolePrint)
-		self.completeTable()
+		# 
+		if ".txt" in fileName:
+			self.completeTableTxt()
+		else:
+			self.completeTableOthers()
+
 
 
 
@@ -97,8 +90,8 @@ class CustomMainWindow(mw.Ui_MainWindow):
 		rinterface.set_writeconsole(rinterface.consolePrint)
 
 	
-
-	def completeTable(self):
+	# Complete QTableWidget with a txt file
+	def completeTableTxt(self):
 		nrow = robjects.r("nrow(datos)")
 		ncol = robjects.r("ncol(datos)")
 		print("row " + str(nrow[0]) + " col " + str(ncol))
@@ -128,7 +121,45 @@ class CustomMainWindow(mw.Ui_MainWindow):
 				self.tableWidget.setItem(i, j, itemContent)
 
 
+	# Complete QTableWidget with a sav, rdata or xls file
+	def completeTableOthers(self):
+		nrow = robjects.r("nrow(datos)")
+		ncol = robjects.r("ncol(datos)")
+		print("row " + str(nrow[0]) + " col " + str(ncol))
 
+		self.tableWidget.clear()
+		
+		self.tableWidget.setRowCount(nrow[0])
+		self.tableWidget.setColumnCount(ncol[0])
+
+		for i in range(ncol[0]):
+			ind = i+1
+			nameCol = robjects.r("colnames(datos["+str(ind)+"])")
+			print str(ind) + "-" + str(nameCol[0])
+			newItem = QtGui.QTableWidgetItem(str(nameCol[0]))
+			self.tableWidget.setHorizontalHeaderItem(i, newItem)
+			self.insertVariables(nameCol,i)
+
+		for i in range(nrow[0]):
+			for j in range(ncol[0]):
+				ni = i+1
+				nj = j+1
+				comando = "datos[" + str(ni) + "," + str(nj) + "]"
+				content = robjects.r(comando)
+				if hasattr(content, 'levels'):
+					itemContent = QtGui.QTableWidgetItem(str(content.levels[0]))
+				else:
+					itemContent = QtGui.QTableWidgetItem(str(content[0]))
+
+				self.tableWidget.setItem(i, j, itemContent)
+
+
+	# Insert variables into a listWidget
+	def insertVariables(self, nameVar, i):
+		self.list_variables.insertItem(i, str(nameVar[0]))
+
+
+	# Initialize a QTableWidget when the program is open
 	def initTable(self):
 		nrow = 50
 		ncol = 20

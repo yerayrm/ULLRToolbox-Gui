@@ -32,7 +32,7 @@
        </attribute>
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
-         <layout class="QGridLayout" name="gridLayout_4">
+         <layout class="QGridLayout" name="grid_datos">
           <item row="0" column="0">
            <widget class="QTableWidget" name="tableWidget"/>
           </item>
@@ -42,7 +42,7 @@
       </widget>
       <widget class="QWidget" name="tab_resultados">
        <attribute name="title">
-        <string>Vista de resultados</string>
+        <string>Vista de comandos</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_5">
         <item row="0" column="0">
@@ -61,35 +61,17 @@
               <height>16777215</height>
              </size>
             </property>
-            <item>
-             <property name="text">
-              <string>Variable 1</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Variable 2</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Variable 3</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Variable 4</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Variable 5</string>
-             </property>
-            </item>
            </widget>
           </item>
           <item row="3" column="1" colspan="2">
-           <widget class="QTextBrowser" name="text_result"/>
+           <widget class="QTextBrowser" name="text_result">
+            <property name="tabChangesFocus">
+             <bool>false</bool>
+            </property>
+            <property name="undoRedoEnabled">
+             <bool>false</bool>
+            </property>
+           </widget>
           </item>
           <item row="1" column="1">
            <widget class="QTextEdit" name="edit_comandos">
@@ -101,17 +83,17 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="button_ejecutar">
-            <property name="text">
-             <string>Ejecutar</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_lista">
             <property name="text">
              <string>Lista de variables</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" colspan="2">
+           <widget class="QLabel" name="label_resultados">
+            <property name="text">
+             <string>Resultados</string>
             </property>
            </widget>
           </item>
@@ -122,10 +104,10 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1" colspan="2">
-           <widget class="QLabel" name="label_resultados">
+          <item row="1" column="2">
+           <widget class="QPushButton" name="button_ejecutar">
             <property name="text">
-             <string>Resultados</string>
+             <string>Ejecutar</string>
             </property>
            </widget>
           </item>
