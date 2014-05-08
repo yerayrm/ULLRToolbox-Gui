@@ -1,15 +1,23 @@
 from PySide import QtCore, QtGui
-import sys
+from PySide.QtUiTools import QUiLoader
+from PySide.QtGui import QApplication, QLineEdit
+from sources.MainWindowCustom import MainWindowCustom
 import sources.custom_mainwindow as mw
+import sys
 
-class ControlMainWindow(QtGui.QMainWindow):
-    def __init__(self, parent=None):
-        super(ControlMainWindow, self).__init__(parent)
-        self.ui = mw.CustomMainWindow()
-        self.ui.setupUi(self)
+import resource_rc
+resource_rc.qInitResources()
 
-if __name__ == "__main__":
-    app = QtGui.QApplication(sys.argv)
-    mySW = ControlMainWindow()
-    mySW.showMaximized()
-    sys.exit(app.exec_())
+
+def main(argv=None):
+    app = QApplication(sys.argv)
+    loader = QUiLoader()
+    ui = loader.load(':/mainwindow')
+    mw = MainWindowCustom(ui)
+    mw.onCreate()
+    ui.showMaximized()
+    return app.exec_()
+
+
+if __name__ == '__main__':
+    main()

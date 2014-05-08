@@ -2,6 +2,7 @@ from PySide import QtCore, QtGui
 from rpy2 import rinterface, robjects
 import sys
 import interface.mainwindow as mw
+import key_press_eater as kp
 
 class CustomMainWindow(mw.Ui_MainWindow):
 	def setupUi(self, MainWindow):
@@ -26,10 +27,13 @@ class CustomMainWindow(mw.Ui_MainWindow):
 		QtCore.QObject.connect(self.button_ejecutar, QtCore.SIGNAL("clicked()"), self.insertCommand)
 		QtCore.QObject.connect(self.act_cerrar, QtCore.SIGNAL("triggered()"), MainWindow.close)
 
+		# capture key event
+		#keyPressEater = kp.KeyPressEater(self)
+		#self.edit_comandos.installEventFilter(keyPressEater)
+
 		# init methods
 		self.initToolbox()
 		self.initTable()
-		
 
 		# call a method to translate interface
 		self.retranslateUi(MainWindow)
@@ -63,12 +67,11 @@ class CustomMainWindow(mw.Ui_MainWindow):
 		resultado = robjects.r(comando)
 		currentList = robjects.globalenv.keys()
 
-		# 
+		# Call a completeTable method
 		if ".txt" in fileName:
 			self.completeTableTxt()
 		else:
 			self.completeTableOthers()
-
 
 
 
@@ -88,6 +91,7 @@ class CustomMainWindow(mw.Ui_MainWindow):
 			self.text_result.append(str(resultado))
 
 		rinterface.set_writeconsole(rinterface.consolePrint)
+
 
 	
 	# Complete QTableWidget with a txt file
@@ -121,6 +125,7 @@ class CustomMainWindow(mw.Ui_MainWindow):
 				self.tableWidget.setItem(i, j, itemContent)
 
 
+
 	# Complete QTableWidget with a sav, rdata or xls file
 	def completeTableOthers(self):
 		nrow = robjects.r("nrow(datos)")
@@ -152,6 +157,7 @@ class CustomMainWindow(mw.Ui_MainWindow):
 					itemContent = QtGui.QTableWidgetItem(str(content[0]))
 
 				self.tableWidget.setItem(i, j, itemContent)
+
 
 
 	# Insert variables into a listWidget
