@@ -5,8 +5,10 @@ import sys
 class MainWindowCustom():
 
 	#Constructor
-	def __init__(self, ui):
+	def __init__(self, ui, d_agregado):
 		self.ui = ui
+		self.d_agregado = d_agregado
+
 
 	def onCreate(self):
 		# actions
@@ -14,19 +16,28 @@ class MainWindowCustom():
 		self.act_guardar = QtGui.QAction(QtGui.QIcon('./resources/saveIcon.png'), "Guardar Archivo", self.ui)
 		self.act_cerrar = QtGui.QAction("Cerrar", self.ui)
 
-		# # toolBar
+		self.act_cerrar = QtGui.QAction("Cerrar", self.ui)
+
+		# toolBar
 		self.ui.toolBar.addAction(self.act_abrir)
 		self.ui.toolBar.addAction(self.act_guardar)
 
+		# Archivo
 		self.ui.mnu_archivo.addAction(self.act_abrir)
 		self.ui.mnu_archivo.addAction(self.act_guardar)
 		self.ui.mnu_archivo.addSeparator()
 		self.ui.mnu_archivo.addAction(self.act_cerrar)
 
-		# # signals
+
+		# signals
+		##Archivo
 		QtCore.QObject.connect(self.act_abrir, QtCore.SIGNAL("triggered()"), self.abrirArchivo)
-		QtCore.QObject.connect(self.ui.button_ejecutar, QtCore.SIGNAL("clicked()"), self.insertCommand)
 		QtCore.QObject.connect(self.act_cerrar, QtCore.SIGNAL("triggered()"), self.ui.close)
+		##Datos
+		QtCore.QObject.connect(self.ui.act_agregado, QtCore.SIGNAL("triggered()"), self.openAgregadoDialog)
+
+		QtCore.QObject.connect(self.ui.button_ejecutar, QtCore.SIGNAL("clicked()"), self.insertCommand)
+				
 
 		# init methods
 		self.initToolbox()
@@ -62,6 +73,12 @@ class MainWindowCustom():
 			self.completeTableTxt()
 		else:
 			self.completeTableOthers()
+
+
+	def openAgregadoDialog(self):
+		dialogUi = self.d_agregado
+		dialogUi.setWindowTitle("Agregado")
+		dialogUi.show()
 
 
 

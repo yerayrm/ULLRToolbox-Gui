@@ -11,9 +11,16 @@ resource_rc.qInitResources()
 def main(argv=None):
     app = QApplication(sys.argv)
     loader = QUiLoader()
+
+    # loader del mainwindows y todos los dialogs
     ui = loader.load(':/mainwindow')
-    mw = MainWindowCustom(ui)
+    d_agregado = loader.load(':/agregado_dialog')
+
+    # instancio el mainwindow
+    mw = MainWindowCustom(ui, d_agregado)
     mw.onCreate()
+
+    # inicio el programa
     ui.setWindowTitle("ULLRToolbox")
     ui.setWindowIcon(QtGui.QIcon(':/logo64'))
     ui.showMaximized()
