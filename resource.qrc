@@ -1,5 +1,10 @@
 <RCC>
     <qresource prefix="/">
         <file alias="mainwindow">forms/mainwindow.ui</file>
+        <file alias="logo64">resources/logo64x64.png</file>
+        <file alias="logo32">resources/logo32x32.png</file>
+        <file alias="logo128">resources/logo128x128.png</file>
+        <file alias="logo512">resources/logo512x512.png</file>
+        <file alias="icon">resources/icon.ico</file>
     </qresource>
 </RCC>

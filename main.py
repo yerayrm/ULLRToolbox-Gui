@@ -15,6 +15,7 @@ def main(argv=None):
     mw = MainWindowCustom(ui)
     mw.onCreate()
     ui.setWindowTitle("ULLRToolbox")
+    ui.setWindowIcon(QtGui.QIcon(':/logo64'))
     ui.showMaximized()
     return app.exec_()
 
