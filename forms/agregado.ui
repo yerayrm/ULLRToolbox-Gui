@@ -17,34 +17,34 @@
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
      <item row="2" column="0">
-      <widget class="QGroupBox" name="groupBox_3">
+      <widget class="QGroupBox" name="gb_descriptivos">
        <property name="title">
         <string>Estadísticos descriptivos:</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_5">
         <item row="0" column="0">
-         <widget class="QRadioButton" name="radioButton_3">
+         <widget class="QRadioButton" name="rb_media">
           <property name="text">
            <string>Media</string>
           </property>
          </widget>
         </item>
         <item row="0" column="2">
-         <widget class="QRadioButton" name="radioButton_5">
+         <widget class="QRadioButton" name="rb_dt">
           <property name="text">
            <string>dt</string>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QRadioButton" name="radioButton_4">
+         <widget class="QRadioButton" name="rb_suma">
           <property name="text">
            <string>Suma</string>
           </property>
          </widget>
         </item>
         <item row="0" column="3">
-         <widget class="QRadioButton" name="radioButton_6">
+         <widget class="QRadioButton" name="rb_n">
           <property name="text">
            <string>n</string>
           </property>
@@ -54,7 +54,7 @@
       </widget>
      </item>
      <item row="0" column="0">
-      <widget class="QGroupBox" name="groupBox">
+      <widget class="QGroupBox" name="gb_matriz">
        <property name="maximumSize">
         <size>
          <width>16777215</width>
@@ -66,7 +66,7 @@
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
-         <widget class="QTextEdit" name="textEdit">
+         <widget class="QTextEdit" name="te_matriz">
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -76,34 +76,29 @@
          </widget>
         </item>
        </layout>
-       <zorder>groupBox_2</zorder>
-       <zorder>textEdit</zorder>
       </widget>
      </item>
      <item row="1" column="0">
-      <widget class="QGroupBox" name="groupBox_2">
+      <widget class="QGroupBox" name="gb_agregado">
        <property name="title">
         <string>Agregado por:</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="0" column="0">
-         <widget class="QRadioButton" name="radioButton">
+         <widget class="QRadioButton" name="rb_sujetos">
           <property name="text">
            <string>Sujetos</string>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QRadioButton" name="radioButton_2">
+         <widget class="QRadioButton" name="rb_items">
           <property name="text">
            <string>Items</string>
           </property>
          </widget>
         </item>
        </layout>
-       <zorder>textEdit</zorder>
-       <zorder>radioButton</zorder>
-       <zorder>radioButton_2</zorder>
       </widget>
      </item>
     </layout>
