@@ -5,17 +5,16 @@ import sys
 class MainWindowCustom():
 
 	#Constructor
-	def __init__(self, ui, d_agregado):
+	def __init__(self, ui, d_agregado, d_segmentado):
 		self.ui = ui
 		self.d_agregado = d_agregado
+		self.d_segmentado = d_segmentado
 
 
 	def onCreate(self):
 		# actions
 		self.act_abrir = QtGui.QAction(QtGui.QIcon('./resources/openIcon.png'), 'Abrir archivo', self.ui)
 		self.act_guardar = QtGui.QAction(QtGui.QIcon('./resources/saveIcon.png'), "Guardar Archivo", self.ui)
-		self.act_cerrar = QtGui.QAction("Cerrar", self.ui)
-
 		self.act_cerrar = QtGui.QAction("Cerrar", self.ui)
 
 		# toolBar
@@ -35,9 +34,9 @@ class MainWindowCustom():
 		QtCore.QObject.connect(self.act_cerrar, QtCore.SIGNAL("triggered()"), self.ui.close)
 		##Datos
 		QtCore.QObject.connect(self.ui.act_agregado, QtCore.SIGNAL("triggered()"), self.openAgregadoDialog)
+		QtCore.QObject.connect(self.ui.act_segmentado, QtCore.SIGNAL("triggered()"), self.openSegmentadoDialog)
 
 		QtCore.QObject.connect(self.ui.button_ejecutar, QtCore.SIGNAL("clicked()"), self.insertCommand)
-				
 
 		# init methods
 		self.initToolbox()
@@ -81,11 +80,49 @@ class MainWindowCustom():
 		self.dialogUi.show()
 		self.dialogUi.te_matriz.clear()
 		self.dialogUi.te_matriz.append("list(A=c('a1','a2'), B=c('b1','b2'))")
-		self.dialogUi.buttonBox.accepted.connect(self.accept)
+		self.dialogUi.buttonBox.accepted.connect(self.acceptAgregado)
 		self.dialogUi.buttonBox.rejected.connect(self.cancel)
 
 
-	def accept(self):
+	def openSegmentadoDialog(self):
+		self.dSegmentadoUi = self.d_segmentado
+		self.dSegmentadoUi.setWindowTitle("Segmentado")
+		self.dSegmentadoUi.show()
+		## cargo los elementos del combobox
+		def f(x):
+			print x
+		rinterface.set_writeconsole(f)
+		n_items = "length(names(datos))"
+		n_items = robjects.r(n_items)
+		n_items = n_items[0]
+		self.dSegmentadoUi.factorCombo.clear()
+		for i in range(n_items):
+			item_factor = "names(datos)[" + str(i+1) + "]"
+			item_factor = robjects.r(item_factor)
+			self.dSegmentadoUi.factorCombo.addItem(str(item_factor[0]))
+
+		rinterface.set_writeconsole(rinterface.consolePrint)
+ 
+		## senales
+		self.dSegmentadoUi.buttonBox.accepted.connect(self.acceptSegmentado)
+		self.dSegmentadoUi.buttonBox.rejected.connect(self.cancel)
+
+
+
+	def acceptSegmentado(self):
+		print ("*Accept*")
+		comando = "x.factor=divide.por.factor.fnc(datos, que.factor='" + str(self.dSegmentadoUi.factorCombo.currentText()) + "')"
+		self.ui.text_result.append("> " + comando)
+		def f(x):
+			print x
+		rinterface.set_writeconsole(f)
+		resultado = robjects.r(comando)
+		self.ui.text_result.append(str(resultado))
+		rinterface.set_writeconsole(rinterface.consolePrint)
+
+
+
+	def acceptAgregado(self):
 		print "*Accept*"
 		# matriz de los datos
 		fac_intra = self.dialogUi.te_matriz.toPlainText()
@@ -99,14 +136,11 @@ class MainWindowCustom():
 			agregado_por = "item"
 		else:
 			self.openAgregadoDialog()
-		
-		
 		# ejecuto fac.intra, length, apila.datos, agrega.datos
 		def f(x):
 			print x
-		
+
 		rinterface.set_writeconsole(f)
-		
 		##cambia.nombre
 		crea_nombre = "datos=crea.nombre.item.fnc(datos)"
 		crea_nombre = robjects.r(crea_nombre)
@@ -140,7 +174,6 @@ class MainWindowCustom():
 			agrega_sujeto_str = "agrega.sujeto=agrega.los.datos.fnc(datos.ap, que.factor=c('" + agregado_por + "','A','B'), estadistico='suma')"
 		else:
 			self.openAgregadoDialog()
-
 		agrega_sujeto = robjects.r(agrega_sujeto_str)
 
 		self.ui.text_result.append("")
@@ -154,6 +187,8 @@ class MainWindowCustom():
 		self.ui.text_result.append(str(agrega_sujeto))
 
 		rinterface.set_writeconsole(rinterface.consolePrint)
+
+
 
 
 	def cancel(self):

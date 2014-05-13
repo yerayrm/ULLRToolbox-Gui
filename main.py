@@ -15,9 +15,10 @@ def main(argv=None):
     # loader del mainwindows y todos los dialogs
     ui = loader.load(':/mainwindow')
     d_agregado = loader.load(':/agregado_dialog')
+    d_segmentado = loader.load(':/segmentado_dialog')
 
     # instancio el mainwindow
-    mw = MainWindowCustom(ui, d_agregado)
+    mw = MainWindowCustom(ui, d_agregado, d_segmentado)
     mw.onCreate()
 
     # inicio el programa

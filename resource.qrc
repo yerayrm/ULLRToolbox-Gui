@@ -6,5 +6,6 @@
         <file alias="logo128">resources/logo128x128.png</file>
         <file alias="logo512">resources/logo512x512.png</file>
         <file alias="agregado_dialog">forms/agregado.ui</file>
+        <file alias="segmentado_dialog">forms/segmentado.ui</file>
     </qresource>
 </RCC>
