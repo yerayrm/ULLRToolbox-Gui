@@ -5,10 +5,12 @@ import sys
 class MainWindowCustom():
 
 	#Constructor
-	def __init__(self, ui, d_agregado, d_segmentado):
+	def __init__(self, ui, d_agregado, d_segmentado, d_crearVar_0, d_multiselector):
 		self.ui = ui
 		self.d_agregado = d_agregado
 		self.d_segmentado = d_segmentado
+		self.d_crearVar_0 = d_crearVar_0
+		self.d_multiselector = d_multiselector
 
 
 	def onCreate(self):
@@ -35,7 +37,9 @@ class MainWindowCustom():
 		##Datos
 		QtCore.QObject.connect(self.ui.act_agregado, QtCore.SIGNAL("triggered()"), self.openAgregadoDialog)
 		QtCore.QObject.connect(self.ui.act_segmentado, QtCore.SIGNAL("triggered()"), self.openSegmentadoDialog)
+		QtCore.QObject.connect(self.ui.act_newvar_1, QtCore.SIGNAL("triggered()"), self.openNewVar1)
 
+		# signals main window
 		QtCore.QObject.connect(self.ui.button_ejecutar, QtCore.SIGNAL("clicked()"), self.insertCommand)
 
 		# init methods
@@ -72,6 +76,48 @@ class MainWindowCustom():
 			self.completeTableTxt()
 		else:
 			self.completeTableOthers()
+
+
+	def openNewVar1(self):
+		self.dialogUi = self.d_crearVar_0
+		self.dialogUi.setWindowTitle("Crear nueva variable mediante variables existentes")
+		self.dialogUi.show()
+		QtCore.QObject.connect(self.dialogUi.pushMultiSelector, QtCore.SIGNAL("clicked()"), self.openMultiSelector)
+		self.dialogUi.buttonBox.accepted.connect(self.acceptAgregado)
+		self.dialogUi.buttonBox.rejected.connect(self.cancel)
+
+
+	def openMultiSelector(self):
+		self.dialogMS = self.d_multiselector
+		self.dialogMS.setWindowTitle("Selecciona los parametros")
+		self.dialogMS.show()
+		n_items = "length(names(datos))"
+		n_items = robjects.r(n_items)
+		n_items = n_items[0]
+
+		self.dialogMS.selector_left.clear()
+		self.dialogMS.selector_right.clear()
+		for i in range(n_items):
+			item_factor = "names(datos)[" + str(i+1) + "]"
+			item_factor = robjects.r(item_factor)
+			self.dialogMS.selector_left.insertItem(i, str(item_factor[0]))
+
+		QtCore.QObject.connect(self.dialogMS.moveToLeft, QtCore.SIGNAL("clicked()"), self.moveToLeft)
+		QtCore.QObject.connect(self.dialogMS.moveToRight, QtCore.SIGNAL("clicked()"), self.moveToRight)
+
+		self.dialogMS.buttonBox.accepted.connect(self.acceptAgregado)
+		self.dialogMS.buttonBox.rejected.connect(self.cancel)
+
+
+	def moveToRight(self):
+		self.dialogMS.selector_right.addItem(str(self.dialogMS.selector_left.currentItem().text()))
+		self.dialogMS.selector_left.takeItem(self.dialogMS.selector_left.currentRow())
+
+
+	def moveToLeft(self):
+		self.dialogMS.selector_left.addItem(str(self.dialogMS.selector_right.currentItem().text()))
+		self.dialogMS.selector_right.takeItem(self.dialogMS.selector_right.currentRow())
+
 
 
 	def openAgregadoDialog(self):

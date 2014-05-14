@@ -34,7 +34,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_datos">
        <attribute name="title">
@@ -148,10 +148,28 @@
     <property name="title">
      <string>Datos</string>
     </property>
+    <widget class="QMenu" name="menuVariables">
+     <property name="title">
+      <string>Variables</string>
+     </property>
+     <widget class="QMenu" name="menuCrear_nueva">
+      <property name="title">
+       <string>Crear nueva</string>
+      </property>
+      <addaction name="act_newvar_1"/>
+      <addaction name="act_newvar_2"/>
+      <addaction name="act_newvar_3"/>
+     </widget>
+     <addaction name="menuCrear_nueva"/>
+     <addaction name="act_discretizar"/>
+     <addaction name="act_ordenar_var"/>
+     <addaction name="act_recodificar"/>
+     <addaction name="act_tipificar"/>
+     <addaction name="act_extraer_mues"/>
+    </widget>
     <addaction name="act_agregado"/>
     <addaction name="act_segmentado"/>
-    <addaction name="act_union"/>
-    <addaction name="act_variables"/>
+    <addaction name="menuVariables"/>
    </widget>
    <widget class="QMenu" name="mnu_analisis">
     <property name="title">
@@ -230,11 +248,6 @@
     <string>Union</string>
    </property>
   </action>
-  <action name="act_variables">
-   <property name="text">
-    <string>Variables</string>
-   </property>
-  </action>
   <action name="act_descriptiva">
    <property name="text">
     <string>Estadistica descriptiva</string>
@@ -281,6 +294,46 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="act_discretizar">
+   <property name="text">
+    <string>Discretizar</string>
+   </property>
+  </action>
+  <action name="act_ordenar_var">
+   <property name="text">
+    <string>Ordenar</string>
+   </property>
+  </action>
+  <action name="act_recodificar">
+   <property name="text">
+    <string>Recodificar</string>
+   </property>
+  </action>
+  <action name="act_tipificar">
+   <property name="text">
+    <string>Tipificar</string>
+   </property>
+  </action>
+  <action name="act_extraer_mues">
+   <property name="text">
+    <string>Extraer muestra</string>
+   </property>
+  </action>
+  <action name="act_newvar_1">
+   <property name="text">
+    <string>Variables existentes</string>
+   </property>
+  </action>
+  <action name="act_newvar_2">
+   <property name="text">
+    <string>Funciones de resumen</string>
+   </property>
+  </action>
+  <action name="act_newvar_3">
+   <property name="text">
+    <string>Algoritmo</string>
    </property>
   </action>
  </widget>
