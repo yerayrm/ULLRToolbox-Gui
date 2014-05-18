@@ -29,7 +29,6 @@ class MainWindowCustom():
 		self.ui.mnu_archivo.addSeparator()
 		self.ui.mnu_archivo.addAction(self.act_cerrar)
 
-
 		# signals
 		##Archivo
 		QtCore.QObject.connect(self.act_abrir, QtCore.SIGNAL("triggered()"), self.abrirArchivo)
@@ -82,9 +81,70 @@ class MainWindowCustom():
 		self.dialogUi = self.d_crearVar_0
 		self.dialogUi.setWindowTitle("Crear nueva variable mediante variables existentes")
 		self.dialogUi.show()
-		QtCore.QObject.connect(self.dialogUi.pushMultiSelector, QtCore.SIGNAL("clicked()"), self.openMultiSelector)
-		self.dialogUi.buttonBox.accepted.connect(self.acceptAgregado)
-		self.dialogUi.buttonBox.rejected.connect(self.cancel)
+		self.dialogUi.var_select_1.clear()
+		QtCore.QObject.connect(self.dialogUi.pushMultiSelector, QtCore.SIGNAL("clicked()"), self.openMultiSelector, QtCore.Qt.UniqueConnection)
+		QtCore.QObject.connect(self.dialogUi.btn_add_nivel, QtCore.SIGNAL("clicked()"), self.addNewNivel, QtCore.Qt.UniqueConnection)
+
+		QtCore.QObject.connect(self.dialogUi.buttonBox, QtCore.SIGNAL("accepted()"), self.acceptOpenNewVar1, QtCore.Qt.UniqueConnection)
+		QtCore.QObject.connect(self.dialogUi.buttonBox, QtCore.SIGNAL("rejected()"), self.cancel, QtCore.Qt.UniqueConnection)
+
+
+
+	def acceptOpenNewVar1(self):
+		#capturo el nombre de la nueva variable
+		nameNewVar = self.dialogUi.new_var_1.text()
+		#capturo la inicializacion de la nueva variable
+		initNewVar = self.dialogUi.init_var.text()
+		#capturo todas las condiciones
+
+		#FUNCIONES
+		#datos$treatment= recode(datos$treatment, " NA =-999 ")
+		#datos$bloque.1='alto'
+		#datos[datos$treatment=='control' & datos$fup.1 < 8, ]$bloque.1='bajo'
+		#datos$treatment= recode(datos$treatment, " -999=NA ")
+
+		def f(x):
+			print x
+		rinterface.set_writeconsole(f)
+
+		for i in range(self.dialogUi.nivel_table.rowCount()):
+			comandR1 = ""
+			comandR2 = "datos$" + nameNewVar + "='" + initNewVar + "'"
+			comandR3 = "datos["
+			for j in range(self.dialogUi.nivel_table.columnCount()-1):
+				varCond = self.listMulti[j]
+				comandR1 = "datos$" + varCond + "=recode(datos$" + varCond + ", \"NA=-999\")"
+				print comandR1
+				self.ui.text_result.append("> " + comandR1)
+				comandR1 = robjects.r(comandR1)
+				self.ui.text_result.append(str(comandR1))
+				
+				itemContent = self.dialogUi.nivel_table.item(i, j+1).text()
+				comandR3 = comandR3 + "datos$" + itemContent
+				if (self.dialogUi.nivel_table.rowCount()-1 == j):
+					comandR3 = comandR3 + " & "
+				else:
+					comandR3 = comandR3 + ", "
+			nameCond = self.dialogUi.nivel_table.item(i, 0).text()
+			comandR3 = comandR3 + "]$" + nameNewVar + "='" + nameCond + "'"
+
+			print comandR2
+			self.ui.text_result.append("> " + comandR2)
+			comandR2 = robjects.r(comandR2)
+			self.ui.text_result.append(str(comandR2))
+
+			print comandR3
+			self.ui.text_result.append("> " + comandR3)
+			comandR3 = robjects.r(comandR3)
+			self.ui.text_result.append(str(comandR3))
+
+		rinterface.set_writeconsole(rinterface.consolePrint)
+
+
+
+	def addNewNivel(self):
+		self.dialogUi.nivel_table.insertRow(self.dialogUi.nivel_table.rowCount())
+
 
 
 	def openMultiSelector(self):
@@ -102,11 +162,38 @@ class MainWindowCustom():
 			item_factor = robjects.r(item_factor)
 			self.dialogMS.selector_left.insertItem(i, str(item_factor[0]))
 
-		QtCore.QObject.connect(self.dialogMS.moveToLeft, QtCore.SIGNAL("clicked()"), self.moveToLeft)
-		QtCore.QObject.connect(self.dialogMS.moveToRight, QtCore.SIGNAL("clicked()"), self.moveToRight)
+		QtCore.QObject.connect(self.dialogMS.moveToLeft, QtCore.SIGNAL("clicked()"), self.moveToLeft, QtCore.Qt.UniqueConnection)
+		QtCore.QObject.connect(self.dialogMS.moveToRight, QtCore.SIGNAL("clicked()"), self.moveToRight, QtCore.Qt.UniqueConnection)
 
-		self.dialogMS.buttonBox.accepted.connect(self.acceptAgregado)
-		self.dialogMS.buttonBox.rejected.connect(self.cancel)
+		QtCore.QObject.connect(self.dialogMS.buttonBox, QtCore.SIGNAL("accepted()"), self.acceptMultiSelector, QtCore.Qt.UniqueConnection)
+		QtCore.QObject.connect(self.dialogMS.buttonBox, QtCore.SIGNAL("rejected()"), self.cancel, QtCore.Qt.UniqueConnection)
+
+
+
+	def acceptMultiSelector(self):
+		self.listMulti = []
+		self.dialogUi.nivel_table.clear()
+		for k in range(self.dialogUi.nivel_table.rowCount()):
+			self.dialogUi.nivel_table.removeRow(0)
+
+		for j in range(self.dialogUi.nivel_table.columnCount()+1):
+			self.dialogUi.nivel_table.removeColumn(0)
+
+		if (self.dialogMS.selector_right.count() > 0):
+			self.dialogUi.nivel_table.insertColumn(0)
+			newItem = QtGui.QTableWidgetItem("Nombre Valor")
+			self.dialogUi.nivel_table.setHorizontalHeaderItem(0, newItem)
+			for i in range(self.dialogMS.selector_right.count()):
+				self.dialogUi.nivel_table.insertColumn(i+1)
+				self.listMulti.append(self.dialogMS.selector_right.item(i).text())
+				header = self.dialogMS.selector_right.item(i).text()
+				newItem = QtGui.QTableWidgetItem(header)
+				self.dialogUi.nivel_table.setHorizontalHeaderItem(i+1, newItem)
+
+		self.dialogUi.var_select_1.clear()
+		self.dialogUi.var_select_1.insert(', '.join(self.listMulti))
+		print ', '.join(self.listMulti)
+
 
 
 	def moveToRight(self):
@@ -117,7 +204,6 @@ class MainWindowCustom():
 	def moveToLeft(self):
 		self.dialogMS.selector_left.addItem(str(self.dialogMS.selector_right.currentItem().text()))
 		self.dialogMS.selector_right.takeItem(self.dialogMS.selector_right.currentRow())
-
 
 
 	def openAgregadoDialog(self):

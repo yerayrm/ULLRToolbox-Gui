@@ -162,10 +162,10 @@
      </widget>
      <addaction name="menuCrear_nueva"/>
      <addaction name="act_discretizar"/>
-     <addaction name="act_ordenar_var"/>
      <addaction name="act_recodificar"/>
      <addaction name="act_tipificar"/>
      <addaction name="act_extraer_mues"/>
+     <addaction name="actionTransformar"/>
     </widget>
     <addaction name="act_agregado"/>
     <addaction name="act_segmentado"/>
@@ -334,6 +334,11 @@
   <action name="act_newvar_3">
    <property name="text">
     <string>Algoritmo</string>
+   </property>
+  </action>
+  <action name="actionTransformar">
+   <property name="text">
+    <string>Transformar</string>
    </property>
   </action>
  </widget>
