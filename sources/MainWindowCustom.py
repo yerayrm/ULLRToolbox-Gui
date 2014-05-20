@@ -5,13 +5,14 @@ import sys
 class MainWindowCustom():
 
 	#Constructor
-	def __init__(self, ui, d_agregado, d_segmentado, d_crearVar_0, d_multiselector, d_crearVar_1):
+	def __init__(self, ui, d_agregado, d_segmentado, d_crearVar_0, d_multiselector, d_crearVar_1, d_crearVar_2):
 		self.ui = ui
 		self.d_agregado = d_agregado
 		self.d_segmentado = d_segmentado
-		self.d_crearVar_0 = d_crearVar_0
 		self.d_multiselector = d_multiselector
+		self.d_crearVar_0 = d_crearVar_0
 		self.d_crearVar_1 = d_crearVar_1
+		self.d_crearVar_2 = d_crearVar_2
 
 
 	def onCreate(self):
@@ -39,6 +40,8 @@ class MainWindowCustom():
 		QtCore.QObject.connect(self.ui.act_segmentado, QtCore.SIGNAL("triggered()"), self.openSegmentadoDialog)
 		QtCore.QObject.connect(self.ui.act_newvar_1, QtCore.SIGNAL("triggered()"), self.openNewVar1)
 		QtCore.QObject.connect(self.ui.act_newvar_2, QtCore.SIGNAL("triggered()"), self.openNewVar2)
+		QtCore.QObject.connect(self.ui.act_newvar_3, QtCore.SIGNAL("triggered()"), self.openNewVar3)
+		
 
 		# signals main window
 		QtCore.QObject.connect(self.ui.button_ejecutar, QtCore.SIGNAL("clicked()"), self.insertCommand)
@@ -80,6 +83,37 @@ class MainWindowCustom():
 
 
 
+	def openNewVar3(self):
+		self.dialogUi = self.d_crearVar_2
+		self.dialogUi.setWindowTitle("Crear nueva variable a partir de un algoritmo dado")
+		self.dialogUi.show()
+
+		QtCore.QObject.connect(self.dialogUi.buttonBox, QtCore.SIGNAL("accepted()"), self.acceptOpenNewVar3, QtCore.Qt.UniqueConnection)
+		QtCore.QObject.connect(self.dialogUi.buttonBox, QtCore.SIGNAL("rejected()"), self.cancel, QtCore.Qt.UniqueConnection)
+
+
+
+	def acceptOpenNewVar3(self):
+		fncAlgoritmica = self.dialogUi.fnc_algoritmica.toPlainText()
+		def f(x):
+			print x
+		rinterface.set_writeconsole(f)
+
+		comandR1 = "mi.expresion=" + fncAlgoritmica
+		print comandR1 
+		self.ui.text_result.append("> " + comandR1)
+		comandR1 = robjects.r(comandR1)
+
+		comandR2 = "iqitems = compute.fnc(datos, expresion=mi.expresion)"
+		print comandR2
+		self.ui.text_result.append("> " + comandR2)
+		comandR2 = robjects.r(comandR2)
+
+		self.ui.text_result.append(str(comandR2))
+		rinterface.set_writeconsole(rinterface.consolePrint)
+
+
+
 	def openNewVar2(self):
 		self.dialogUi = self.d_crearVar_1
 		self.dialogUi.setWindowTitle("Crear nueva variable mediante funciones de resumen")
@@ -90,6 +124,8 @@ class MainWindowCustom():
 
 		QtCore.QObject.connect(self.dialogUi.buttonBox, QtCore.SIGNAL("accepted()"), self.acceptOpenNewVar2, QtCore.Qt.UniqueConnection)
 		QtCore.QObject.connect(self.dialogUi.buttonBox, QtCore.SIGNAL("rejected()"), self.cancel, QtCore.Qt.UniqueConnection)
+
+
 
 
 	def acceptOpenNewVar2(self):
@@ -133,48 +169,6 @@ class MainWindowCustom():
 		comandR2 = robjects.r(comandR2)
 
 		self.ui.text_result.append(str(comandR2))
-		rinterface.set_writeconsole(rinterface.consolePrint)
-
-
-
-	def acceptOpenNewVar1(self):
-		nameNewVar = self.dialogUi.new_var_1.text()
-		initNewVar = self.dialogUi.init_var.text()
-
-		def f(x):
-			print x
-		rinterface.set_writeconsole(f)
-
-		for i in range(self.dialogUi.nivel_table.rowCount()):
-			comandR1 = ""
-			comandR2 = "datos$" + nameNewVar + "='" + initNewVar + "'"
-			comandR3 = "datos["
-			for j in range(self.dialogUi.nivel_table.columnCount()-1):
-				varCond = self.listMulti[j]
-				comandR1 = "datos$" + varCond + "=recode(datos$" + varCond + ", \"NA=-999\")"
-				print comandR1
-				self.ui.text_result.append("> " + comandR1)
-				comandR1 = robjects.r(comandR1)
-				self.ui.text_result.append(str(comandR1))
-				
-				itemContent = self.dialogUi.nivel_table.item(i, j+1).text()
-				comandR3 = comandR3 + "datos$" + itemContent
-				if (self.dialogUi.nivel_table.rowCount()-1 == j):
-					comandR3 = comandR3 + " & "
-				else:reomandR3 + ", "
-			nameCond = self.dialogUi.nivel_table.item(i, 0).text()
-			comandR3 = comandR3 + "]$" + nameNewVar + "='" + nameCond + "'"
-
-			print comandR2
-			self.ui.text_result.append("> " + comandR2)
-			comandR2 = robjects.r(comandR2)
-			self.ui.text_result.append(str(comandR2))
-
-			print comandR3
-			self.ui.text_result.append("> " + comandR3)
-			comandR3 = robjects.r(comandR3)
-			self.ui.text_result.append(str(comandR3))
-
 		rinterface.set_writeconsole(rinterface.consolePrint)
 
 
@@ -240,17 +234,6 @@ class MainWindowCustom():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 	def openNewVar1(self):
 		self.dialogUi = self.d_crearVar_0
 		self.dialogUi.setWindowTitle("Crear nueva variable mediante variables existentes")
@@ -263,7 +246,45 @@ class MainWindowCustom():
 		QtCore.QObject.connect(self.dialogUi.buttonBox, QtCore.SIGNAL("rejected()"), self.cancel, QtCore.Qt.UniqueConnection)
 
 
+	def acceptOpenNewVar1(self):
+		nameNewVar = self.dialogUi.new_var_1.text()
+		initNewVar = self.dialogUi.init_var.text()
 
+		def f(x):
+			print x
+		rinterface.set_writeconsole(f)
+
+		for i in range(self.dialogUi.nivel_table.rowCount()):
+			comandR1 = ""
+			comandR2 = "datos$" + nameNewVar + "='" + initNewVar + "'"
+			comandR3 = "datos["
+			for j in range(self.dialogUi.nivel_table.columnCount()-1):
+				varCond = self.listMulti[j]
+				comandR1 = "datos$" + varCond + "=recode(datos$" + varCond + ", \"NA=-999\")"
+				print comandR1
+				self.ui.text_result.append("> " + comandR1)
+				comandR1 = robjects.r(comandR1)
+				self.ui.text_result.append(str(comandR1))
+				
+				itemContent = self.dialogUi.nivel_table.item(i, j+1).text()
+				comandR3 = comandR3 + "datos$" + itemContent
+				if (self.dialogUi.nivel_table.rowCount()-1 == j):
+					comandR3 = comandR3 + " & "
+				else:reomandR3 + ", "
+			nameCond = self.dialogUi.nivel_table.item(i, 0).text()
+			comandR3 = comandR3 + "]$" + nameNewVar + "='" + nameCond + "'"
+
+			print comandR2
+			self.ui.text_result.append("> " + comandR2)
+			comandR2 = robjects.r(comandR2)
+			self.ui.text_result.append(str(comandR2))
+
+			print comandR3
+			self.ui.text_result.append("> " + comandR3)
+			comandR3 = robjects.r(comandR3)
+			self.ui.text_result.append(str(comandR3))
+
+		rinterface.set_writeconsole(rinterface.consolePrint)
 	
 
 

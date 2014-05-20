@@ -18,10 +18,11 @@ def main(argv=None):
     d_segmentado = loader.load(':/segmentado_dialog')
     d_crearVar_0 = loader.load(':/crear_variable_existente')
     d_crearVar_1 = loader.load(':/crear_variable_funcion')
+    d_crearVar_2 = loader.load(':/crear_variable_algoritmo')
     d_multiselector = loader.load(':/multiselect_column')
 
     # instancio el mainwindow
-    mw = MainWindowCustom(ui, d_agregado, d_segmentado, d_crearVar_0, d_multiselector, d_crearVar_1)
+    mw = MainWindowCustom(ui, d_agregado, d_segmentado, d_crearVar_0, d_multiselector, d_crearVar_1, d_crearVar_2)
     mw.onCreate()
 
     # inicio el programa

@@ -10,5 +10,6 @@
         <file alias="crear_variable_existente">forms/crearvariable_existente.ui</file>
         <file alias="multiselect_column">forms/multiselect_column.ui</file>
         <file alias="crear_variable_funcion">forms/crearvariable_funcion.ui</file>
+        <file alias="crear_variable_algoritmo">forms/crearvariable_algoritmo.ui</file>
     </qresource>
 </RCC>
