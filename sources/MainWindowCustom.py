@@ -5,12 +5,13 @@ import sys
 class MainWindowCustom():
 
 	#Constructor
-	def __init__(self, ui, d_agregado, d_segmentado, d_crearVar_0, d_multiselector):
+	def __init__(self, ui, d_agregado, d_segmentado, d_crearVar_0, d_multiselector, d_crearVar_1):
 		self.ui = ui
 		self.d_agregado = d_agregado
 		self.d_segmentado = d_segmentado
 		self.d_crearVar_0 = d_crearVar_0
 		self.d_multiselector = d_multiselector
+		self.d_crearVar_1 = d_crearVar_1
 
 
 	def onCreate(self):
@@ -37,6 +38,7 @@ class MainWindowCustom():
 		QtCore.QObject.connect(self.ui.act_agregado, QtCore.SIGNAL("triggered()"), self.openAgregadoDialog)
 		QtCore.QObject.connect(self.ui.act_segmentado, QtCore.SIGNAL("triggered()"), self.openSegmentadoDialog)
 		QtCore.QObject.connect(self.ui.act_newvar_1, QtCore.SIGNAL("triggered()"), self.openNewVar1)
+		QtCore.QObject.connect(self.ui.act_newvar_2, QtCore.SIGNAL("triggered()"), self.openNewVar2)
 
 		# signals main window
 		QtCore.QObject.connect(self.ui.button_ejecutar, QtCore.SIGNAL("clicked()"), self.insertCommand)
@@ -77,31 +79,78 @@ class MainWindowCustom():
 			self.completeTableOthers()
 
 
-	def openNewVar1(self):
-		self.dialogUi = self.d_crearVar_0
-		self.dialogUi.setWindowTitle("Crear nueva variable mediante variables existentes")
-		self.dialogUi.show()
-		self.dialogUi.var_select_1.clear()
-		QtCore.QObject.connect(self.dialogUi.pushMultiSelector, QtCore.SIGNAL("clicked()"), self.openMultiSelector, QtCore.Qt.UniqueConnection)
-		QtCore.QObject.connect(self.dialogUi.btn_add_nivel, QtCore.SIGNAL("clicked()"), self.addNewNivel, QtCore.Qt.UniqueConnection)
 
-		QtCore.QObject.connect(self.dialogUi.buttonBox, QtCore.SIGNAL("accepted()"), self.acceptOpenNewVar1, QtCore.Qt.UniqueConnection)
+
+
+
+
+
+
+
+
+	def openNewVar2(self):
+		self.dialogUi = self.d_crearVar_1
+		self.dialogUi.setWindowTitle("Crear nueva variable mediante funciones de resumen")
+		self.dialogUi.show()
+
+		QtCore.QObject.connect(self.dialogUi.btn_add_factor, QtCore.SIGNAL("clicked()"), self.addNewFactor, QtCore.Qt.UniqueConnection)
+		self.dialogUi.factor_table.cellClicked.connect(self.cellClickedTable)
+
+		QtCore.QObject.connect(self.dialogUi.buttonBox, QtCore.SIGNAL("accepted()"), self.acceptOpenNewVar2, QtCore.Qt.UniqueConnection)
 		QtCore.QObject.connect(self.dialogUi.buttonBox, QtCore.SIGNAL("rejected()"), self.cancel, QtCore.Qt.UniqueConnection)
+
+
+	def acceptOpenNewVar2(self):
+		#mi.lista=list( F1=c(1,5,10,2,8,3), F3=c(9,11,7))
+		#iqitems=compute.fnc(iqitems, variables=mi.lista) 
+		comandR1 = "mi.lista=list("
+		for i in range(self.dialogUi.factor_table.rowCount()):
+			itemName = self.dialogUi.factor_table.item(i, 0).text()
+			itemParams = self.dialogUi.factor_table.item(i, 1).text()
+			print ("itemName: " + itemName)
+			print ("itemParams" + itemParams)
+			comandR1 = comandR1 + itemName + "=c(" + itemParams + ")"
+			if (i != self.dialogUi.factor_table.rowCount()-1):
+				comandR1 = comandR1 + ", "
+
+		comandR1 = comandR1 + ")"
+
+		# estadisticos descriptivos
+		if self.dialogUi.nv_media.isChecked():
+			print "media"
+			comandR2 = "iqitems=compute.fnc(datos, variables=mi.lista)"
+		elif self.dialogUi.nv_mediana.isChecked():
+			print "mediana"
+			comandR2 = "iqitems=compute.fnc(datos, variables=mi.lista, estadistico='mediana')"
+		elif self.dialogUi.nv_suma.isChecked():
+			print "suma"
+			comandR2 = "iqitems=compute.fnc(datos, variables=mi.lista, estadistico='suma')"
+		elif self.dialogUi.nv_sc.isChecked():
+			print "sc"
+			comandR2 = "iqitems=compute.fnc(datos, variables=mi.lista, estadistico='sc')"
+		else:
+			self.openNewVar2()
+		
+		def f(x):
+			print x
+		rinterface.set_writeconsole(f)
+
+		print comandR1
+		self.ui.text_result.append("> " + comandR1)
+		comandR1 = robjects.r(comandR1)
+
+		print comandR2
+		self.ui.text_result.append("> " + comandR2)
+		comandR2 = robjects.r(comandR2)
+
+		self.ui.text_result.append(str(comandR2))
+		rinterface.set_writeconsole(rinterface.consolePrint)
 
 
 
 	def acceptOpenNewVar1(self):
-		#capturo el nombre de la nueva variable
 		nameNewVar = self.dialogUi.new_var_1.text()
-		#capturo la inicializacion de la nueva variable
 		initNewVar = self.dialogUi.init_var.text()
-		#capturo todas las condiciones
-
-		#FUNCIONES
-		#datos$treatment= recode(datos$treatment, " NA =-999 ")
-		#datos$bloque.1='alto'
-		#datos[datos$treatment=='control' & datos$fup.1 < 8, ]$bloque.1='bajo'
-		#datos$treatment= recode(datos$treatment, " -999=NA ")
 
 		def f(x):
 			print x
@@ -123,8 +172,7 @@ class MainWindowCustom():
 				comandR3 = comandR3 + "datos$" + itemContent
 				if (self.dialogUi.nivel_table.rowCount()-1 == j):
 					comandR3 = comandR3 + " & "
-				else:
-					comandR3 = comandR3 + ", "
+				else:reomandR3 + ", "
 			nameCond = self.dialogUi.nivel_table.item(i, 0).text()
 			comandR3 = comandR3 + "]$" + nameNewVar + "='" + nameCond + "'"
 
@@ -139,6 +187,92 @@ class MainWindowCustom():
 			self.ui.text_result.append(str(comandR3))
 
 		rinterface.set_writeconsole(rinterface.consolePrint)
+
+
+
+	def addNewFactor(self):
+		row = self.dialogUi.factor_table.rowCount()
+		self.dialogUi.factor_table.insertRow(row)
+
+
+
+
+	def cellClickedTable(self, row, col):
+		print("Row %d and Column %d was clicked" % (row, col))
+		if (col == 1):
+			self.row = row
+			self.col = col
+			self.openMultiSelector2()
+
+
+
+
+	def openMultiSelector2(self):
+		self.dialogMS = self.d_multiselector
+		self.dialogMS.setWindowTitle("Selecciona los parametros")
+		self.dialogMS.show()
+		n_items = "length(names(datos))"
+		n_items = robjects.r(n_items)
+		n_items = n_items[0]
+
+		self.dialogMS.selector_left.clear()
+		self.dialogMS.selector_right.clear()
+		for i in range(n_items):
+			item_factor = "names(datos)[" + str(i+1) + "]"
+			item_factor = robjects.r(item_factor)
+			self.dialogMS.selector_left.insertItem(i, str(i+1) + " - " +  str(item_factor[0]))
+
+		QtCore.QObject.connect(self.dialogMS.moveToLeft, QtCore.SIGNAL("clicked()"), self.moveToLeft, QtCore.Qt.UniqueConnection)
+		QtCore.QObject.connect(self.dialogMS.moveToRight, QtCore.SIGNAL("clicked()"), self.moveToRight, QtCore.Qt.UniqueConnection)
+
+		QtCore.QObject.connect(self.dialogMS.buttonBox, QtCore.SIGNAL("accepted()"), self.acceptMultiSelector2, QtCore.Qt.UniqueConnection)
+		QtCore.QObject.connect(self.dialogMS.buttonBox, QtCore.SIGNAL("rejected()"), self.cancel, QtCore.Qt.UniqueConnection)
+
+
+
+	def acceptMultiSelector2(self):
+		print "acept 2"
+		self.listMulti = []
+		
+		for i in range(self.dialogMS.selector_right.count()):
+			print "entro"
+			item = self.dialogMS.selector_right.item(i).text()
+			item = item[0]
+			print item
+			self.listMulti.append(item)
+
+		itemContent = QtGui.QTableWidgetItem(', '.join(self.listMulti))
+		self.dialogUi.factor_table.setItem(self.row, self.col, itemContent)
+		print "lista: " + ', '.join(self.listMulti)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	def openNewVar1(self):
+		self.dialogUi = self.d_crearVar_0
+		self.dialogUi.setWindowTitle("Crear nueva variable mediante variables existentes")
+		self.dialogUi.show()
+		self.dialogUi.var_select_1.clear()
+		QtCore.QObject.connect(self.dialogUi.pushMultiSelector, QtCore.SIGNAL("clicked()"), self.openMultiSelector, QtCore.Qt.UniqueConnection)
+		QtCore.QObject.connect(self.dialogUi.btn_add_nivel, QtCore.SIGNAL("clicked()"), self.addNewNivel, QtCore.Qt.UniqueConnection)
+
+		QtCore.QObject.connect(self.dialogUi.buttonBox, QtCore.SIGNAL("accepted()"), self.acceptOpenNewVar1, QtCore.Qt.UniqueConnection)
+		QtCore.QObject.connect(self.dialogUi.buttonBox, QtCore.SIGNAL("rejected()"), self.cancel, QtCore.Qt.UniqueConnection)
+
+
+
+	
 
 
 
@@ -199,11 +333,15 @@ class MainWindowCustom():
 	def moveToRight(self):
 		self.dialogMS.selector_right.addItem(str(self.dialogMS.selector_left.currentItem().text()))
 		self.dialogMS.selector_left.takeItem(self.dialogMS.selector_left.currentRow())
+		print "right n=" + str(self.dialogMS.selector_right.count())
+		print "left n=" + str(self.dialogMS.selector_left.count())
 
 
 	def moveToLeft(self):
 		self.dialogMS.selector_left.addItem(str(self.dialogMS.selector_right.currentItem().text()))
 		self.dialogMS.selector_right.takeItem(self.dialogMS.selector_right.currentRow())
+		print "right n=" + str(self.dialogMS.selector_right.count())
+		print "left n=" + str(self.dialogMS.selector_left.count())
 
 
 	def openAgregadoDialog(self):
