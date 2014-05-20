@@ -80,14 +80,6 @@ class MainWindowCustom():
 
 
 
-
-
-
-
-
-
-
-
 	def openNewVar2(self):
 		self.dialogUi = self.d_crearVar_1
 		self.dialogUi.setWindowTitle("Crear nueva variable mediante funciones de resumen")
@@ -101,8 +93,6 @@ class MainWindowCustom():
 
 
 	def acceptOpenNewVar2(self):
-		#mi.lista=list( F1=c(1,5,10,2,8,3), F3=c(9,11,7))
-		#iqitems=compute.fnc(iqitems, variables=mi.lista) 
 		comandR1 = "mi.lista=list("
 		for i in range(self.dialogUi.factor_table.rowCount()):
 			itemName = self.dialogUi.factor_table.item(i, 0).text()
@@ -115,7 +105,6 @@ class MainWindowCustom():
 
 		comandR1 = comandR1 + ")"
 
-		# estadisticos descriptivos
 		if self.dialogUi.nv_media.isChecked():
 			print "media"
 			comandR2 = "iqitems=compute.fnc(datos, variables=mi.lista)"
@@ -221,6 +210,9 @@ class MainWindowCustom():
 			item_factor = "names(datos)[" + str(i+1) + "]"
 			item_factor = robjects.r(item_factor)
 			self.dialogMS.selector_left.insertItem(i, str(i+1) + " - " +  str(item_factor[0]))
+			#iqitems$iq1=recode(iqitems$iq1, " NA=0 ")
+			comandRecode = "datos$" + str(item_factor[0]) + "=recode(datos$" + str(item_factor[0]) + ", \"NA=0\")"
+			comandRecode = robjects.r(comandRecode)
 
 		QtCore.QObject.connect(self.dialogMS.moveToLeft, QtCore.SIGNAL("clicked()"), self.moveToLeft, QtCore.Qt.UniqueConnection)
 		QtCore.QObject.connect(self.dialogMS.moveToRight, QtCore.SIGNAL("clicked()"), self.moveToRight, QtCore.Qt.UniqueConnection)
