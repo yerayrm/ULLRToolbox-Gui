@@ -8,6 +8,8 @@ from sources.FncDatosAgregado import FncDatosAgregado
 from sources.FncDatosSegmentado import FncDatosSegmentado
 from sources.FncDatosCrear import FncDatosCrear
 from sources.FncDatosDiscretizar import FncDatosDiscretizar
+from sources.QTextEditCustom import QTextEditCustom
+
 
 import sys
 import resource_rc

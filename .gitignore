@@ -26,4 +26,6 @@ Makefile
 
 # Others
 README.html
+.RData
+.Rhistory
 
