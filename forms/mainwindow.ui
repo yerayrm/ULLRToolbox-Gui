@@ -63,62 +63,136 @@
           <property name="spacing">
            <number>20</number>
           </property>
-          <item row="3" column="1" colspan="2">
-           <widget class="QTextBrowser" name="text_result">
-            <property name="tabChangesFocus">
-             <bool>false</bool>
+          <item row="0" column="0" rowspan="5">
+           <widget class="QGroupBox" name="groupBox_3">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
-            <property name="undoRedoEnabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QTextEdit" name="edit_comandos">
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>100</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_lista">
-            <property name="text">
-             <string>Lista de variables</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1" colspan="2">
-           <widget class="QLabel" name="label_resultados">
-            <property name="text">
-             <string>Resultados</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QLabel" name="label_ejecutar">
-            <property name="text">
-             <string>Comando</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" rowspan="3">
-           <widget class="QListWidget" name="list_variables">
             <property name="maximumSize">
              <size>
               <width>200</width>
               <height>16777215</height>
              </size>
             </property>
+            <property name="title">
+             <string>Lista de variables</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_7">
+             <item row="0" column="0">
+              <widget class="QListWidget" name="list_variables">
+               <property name="maximumSize">
+                <size>
+                 <width>300</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="button_ejecutar">
-            <property name="text">
-             <string>Ejecutar</string>
+          <item row="1" column="1" rowspan="4" colspan="2">
+           <widget class="QGroupBox" name="groupBox_2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="title">
+             <string>Resultados</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_6">
+             <item row="0" column="0">
+              <widget class="QTextBrowser" name="text_result">
+               <property name="tabChangesFocus">
+                <bool>false</bool>
+               </property>
+               <property name="undoRedoEnabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2">
+           <widget class="QGroupBox" name="groupBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>200</height>
+             </size>
+            </property>
+            <property name="title">
+             <string>Ventana de comandos</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_4">
+             <item row="1" column="1">
+              <widget class="QPushButton" name="button_ejecutar">
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Ejecutar</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QPushButton" name="button_clean">
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Limpiar ventana</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="0" column="0" colspan="3">
+              <widget class="QTextEdit" name="edit_comandos">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
@@ -142,7 +216,11 @@
     <property name="title">
      <string>Archivo</string>
     </property>
+    <addaction name="act_abrir_archivo"/>
+    <addaction name="act_guardar_archivo"/>
+    <addaction name="act_exportar_archivo"/>
     <addaction name="separator"/>
+    <addaction name="act_Cerrar"/>
    </widget>
    <widget class="QMenu" name="mnu_datos">
     <property name="title">
@@ -339,6 +417,26 @@
   <action name="actionTransformar">
    <property name="text">
     <string>Transformar</string>
+   </property>
+  </action>
+  <action name="act_abrir_archivo">
+   <property name="text">
+    <string>Abrir archivo</string>
+   </property>
+  </action>
+  <action name="act_guardar_archivo">
+   <property name="text">
+    <string>Guardar archivo</string>
+   </property>
+  </action>
+  <action name="act_exportar_archivo">
+   <property name="text">
+    <string>Exportar archivo</string>
+   </property>
+  </action>
+  <action name="act_Cerrar">
+   <property name="text">
+    <string>Cerrar</string>
    </property>
   </action>
  </widget>
