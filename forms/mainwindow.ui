@@ -34,7 +34,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_datos">
        <attribute name="title">
@@ -217,6 +217,7 @@
      <string>Archivo</string>
     </property>
     <addaction name="act_abrir_archivo"/>
+    <addaction name="separator"/>
     <addaction name="act_guardar_archivo"/>
     <addaction name="act_exportar_archivo"/>
     <addaction name="separator"/>
@@ -243,7 +244,7 @@
      <addaction name="act_recodificar"/>
      <addaction name="act_tipificar"/>
      <addaction name="act_extraer_mues"/>
-     <addaction name="actionTransformar"/>
+     <addaction name="act_transformar"/>
     </widget>
     <addaction name="act_agregado"/>
     <addaction name="act_segmentado"/>
@@ -253,24 +254,56 @@
     <property name="title">
      <string>Análisis</string>
     </property>
-    <addaction name="act_descriptiva"/>
-    <addaction name="act_contraste"/>
-    <addaction name="act_anovas"/>
-    <addaction name="act_regresion"/>
-    <addaction name="act_logistica"/>
-    <addaction name="act_multivariado"/>
+    <widget class="QMenu" name="mnu_contraste">
+     <property name="title">
+      <string>Contraste de medias</string>
+     </property>
+     <addaction name="act_contr_inter"/>
+     <addaction name="act_contr_intra"/>
+    </widget>
+    <widget class="QMenu" name="mnu_descriptiva">
+     <property name="title">
+      <string>Estadistica descriptiva</string>
+     </property>
+     <addaction name="act_descr_univar"/>
+     <addaction name="act_descr_multiple"/>
+    </widget>
+    <widget class="QMenu" name="mnu_anova">
+     <property name="title">
+      <string>ANOVA</string>
+     </property>
+     <addaction name="act_anv_intergrupo"/>
+     <addaction name="act_anv_intragrupo"/>
+     <addaction name="act_anv_splitplot"/>
+    </widget>
+    <widget class="QMenu" name="mnu_regresion">
+     <property name="title">
+      <string>Regresión</string>
+     </property>
+     <addaction name="act_regr_multiple"/>
+     <addaction name="act_regr_mediacion"/>
+    </widget>
+    <addaction name="mnu_descriptiva"/>
+    <addaction name="act_correlacion"/>
+    <addaction name="mnu_contraste"/>
+    <addaction name="mnu_anova"/>
+    <addaction name="mnu_regresion"/>
    </widget>
    <widget class="QMenu" name="mnu_graficos">
     <property name="title">
      <string>Gráficos</string>
     </property>
-    <addaction name="act_graficos"/>
+    <addaction name="act_cajas"/>
+    <addaction name="act_frecuencias"/>
+    <addaction name="act_dispersion"/>
+    <addaction name="act_percentiles"/>
+    <addaction name="act_histogramas"/>
    </widget>
    <widget class="QMenu" name="mnu_acerca">
     <property name="title">
      <string>Acerca de</string>
     </property>
-    <addaction name="act_sobre"/>
+    <addaction name="act_sobre_"/>
    </widget>
    <addaction name="mnu_archivo"/>
    <addaction name="mnu_datos"/>
@@ -326,44 +359,19 @@
     <string>Union</string>
    </property>
   </action>
-  <action name="act_descriptiva">
-   <property name="text">
-    <string>Estadistica descriptiva</string>
-   </property>
-  </action>
-  <action name="act_contraste">
-   <property name="text">
-    <string>Contraste de medias</string>
-   </property>
-  </action>
-  <action name="act_anovas">
-   <property name="text">
-    <string>ANOVA</string>
-   </property>
-  </action>
-  <action name="act_regresion">
-   <property name="text">
-    <string>Regresión múltiple</string>
-   </property>
-  </action>
-  <action name="act_logistica">
-   <property name="text">
-    <string>Logística</string>
-   </property>
-  </action>
   <action name="act_multivariado">
    <property name="text">
     <string>Análisis multivariado</string>
    </property>
   </action>
-  <action name="act_sobre">
+  <action name="act_sobre_">
    <property name="text">
     <string>Sobre ULLRToolbox</string>
    </property>
   </action>
-  <action name="act_graficos">
+  <action name="act_cajas">
    <property name="text">
-    <string>Añadir gráficos</string>
+    <string>Diagrama de cajas</string>
    </property>
   </action>
   <action name="act_cerrar">
@@ -414,7 +422,7 @@
     <string>Algoritmo</string>
    </property>
   </action>
-  <action name="actionTransformar">
+  <action name="act_transformar">
    <property name="text">
     <string>Transformar</string>
    </property>
@@ -437,6 +445,101 @@
   <action name="act_Cerrar">
    <property name="text">
     <string>Cerrar</string>
+   </property>
+  </action>
+  <action name="act_frecuencias">
+   <property name="text">
+    <string>Frecuencias</string>
+   </property>
+  </action>
+  <action name="act_dispersion">
+   <property name="text">
+    <string>Dispersión</string>
+   </property>
+  </action>
+  <action name="act_percentiles">
+   <property name="text">
+    <string>Percentiles</string>
+   </property>
+  </action>
+  <action name="act_histogramas">
+   <property name="text">
+    <string>Histogramas</string>
+   </property>
+  </action>
+  <action name="act_corr_inter">
+   <property name="text">
+    <string>Intergrupo</string>
+   </property>
+  </action>
+  <action name="act_corr_intra">
+   <property name="text">
+    <string>Intragrupo</string>
+   </property>
+  </action>
+  <action name="act_contr_inter">
+   <property name="text">
+    <string>Intergrupo</string>
+   </property>
+  </action>
+  <action name="act_contr_intra">
+   <property name="text">
+    <string>Intragrupo</string>
+   </property>
+  </action>
+  <action name="act_descr_univar">
+   <property name="text">
+    <string>Variable dependiente</string>
+   </property>
+  </action>
+  <action name="act_descr_multiple">
+   <property name="text">
+    <string>Multiples variables</string>
+   </property>
+  </action>
+  <action name="act_pearsson">
+   <property name="text">
+    <string>Pearsson</string>
+   </property>
+  </action>
+  <action name="act_corica">
+   <property name="text">
+    <string>Policorica y tetracorica</string>
+   </property>
+  </action>
+  <action name="act_parcial">
+   <property name="text">
+    <string>Parcial y semiparcial</string>
+   </property>
+  </action>
+  <action name="act_correlacion">
+   <property name="text">
+    <string>Correlación</string>
+   </property>
+  </action>
+  <action name="act_anv_intergrupo">
+   <property name="text">
+    <string>Intergrupo</string>
+   </property>
+  </action>
+  <action name="act_anv_intragrupo">
+   <property name="text">
+    <string>Intragrupo</string>
+   </property>
+  </action>
+  <action name="act_anv_splitplot">
+   <property name="text">
+    <string>Split-plot</string>
+   </property>
+  </action>
+  <action name="act_regr_multiple">
+   <property name="text">
+    <string>Regresion multiple</string>
+   </property>
+  </action>
+  <action name="act_regr_mediacion">
+   <property name="text">
+    <string>Mediacion</string>
    </property>
   </action>
  </widget>

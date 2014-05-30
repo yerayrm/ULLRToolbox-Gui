@@ -5,7 +5,7 @@ import sys
 class FncDatosDiscretizar():
 
 	#Constructor
-	def __init__(self, ui):
+	def __init__(self, ui, d_discretizar):
 		self.ui = ui
 		self.d_discretizar = d_discretizar
 
@@ -14,6 +14,8 @@ class FncDatosDiscretizar():
 
 
 	def openDiscretizar(self):
-		print ""
+		self.dialogUi = self.d_discretizar
+		self.dialogUi.setWindowTitle("Discretizar")
+		self.dialogUi.show()
 
 

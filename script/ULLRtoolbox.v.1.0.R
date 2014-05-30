@@ -1468,7 +1468,7 @@ cat('',fill=TRUE)
 			cat('*** computacionalmente muy intensiva. Se paciente. Haz clic    ',fill=TRUE)
 			cat('*** en consola si deseas ver la evolucion del proceso. ',fill=TRUE)
 			cat('---------------------------------------------------------------',fill=TRUE)
- 			cor.dat=polychor(na.omit(dat), smooth=TRUE, global=TRUE, polycor=T,
+ 			cor.dat=polychoric(na.omit(dat), smooth=TRUE, global=TRUE, polycor=T,
 	 				ML = FALSE, std.err=FALSE)
 			cor.dat=cor.dat[[1]]
 		}
@@ -3489,7 +3489,7 @@ ncvTest.lmB = function(model, var.formula,dat) {
 #---------------------------------------------------------------------------
  correlacion.fnc=function(datos=NA, variables=NA, tipo=NA, covarianza=FALSE, silente=FALSE,
 		contraste=NA, que.factor=NA, caso.completo=TRUE, parcial=FALSE,
-	        sparcial=FALSE, control=NA){
+	        sparcial=FALSE, control=NA, guarda.contraste=FALSE, nombre.archivo=NULL){
 
 	if(class(try(is.na(datos)))=='logical') {
 		cat('',fill=TRUE)
@@ -3751,7 +3751,34 @@ ncvTest.lmB = function(model, var.formula,dat) {
 			crea.cat.fnc(paste(titulo,' Contraste Ho: rxy(Pearson, NO TETRACORICA) = 0',sep=' '))
 		}
 		
+		if(type=='pearson'){
+			alma$sig='   '
+			alma$reg=1:dim(alma)[1]
+			no.sig=subset(alma, p.val > 0.05)
+			sig.05=subset(alma, p.val <= 0.05 & p.val > 0.01) 
+			sig.01=subset(alma, p.val <= 0.01 & p.val > 0.001)
+			sig.001=subset(alma, p.val <= 0.001)
+			if(dim(sig.05)[1]!=0) 	sig.05$sig='  *'
+			if(dim(sig.01)[1]!=0) 	sig.01$sig=' **'
+			if(dim(sig.001)[1]!=0)	sig.001$sig='***'
+			alma=rbind(no.sig,sig.05,sig.01,sig.001)
+		
+			alma$p.adj=p.adjust(alma$p.val, method="hochberg")
+			alma$sig.hochberg='   '
+			no.sig1=subset(alma, p.adj > 0.05)
+			sig.051=subset(alma, p.adj <= 0.05 & p.adj > 0.01) 
+			sig.011=subset(alma, p.adj <= 0.01 & p.adj > 0.001)
+			sig.0011=subset(alma, p.adj <= 0.001)
+			if(dim(sig.051)[1]!=0) 	sig.051$sig.hochberg='  *'
+			if(dim(sig.011)[1]!=0) 	sig.011$sig.hochberg=' **'
+			if(dim(sig.0011)[1]!=0)	sig.0011$sig.hochberg='***'
+			alma=rbind(no.sig1,sig.051,sig.011,sig.0011)
+			alma=ordena.por.variable.fnc(alma,'reg', silente=TRUE)
+			alma=alma[,-c(match(c('reg','indice','p.adj'),names(alma)))]
+			if(guarda.contraste) export.txt.fnc(alma,paste('contrast_cor_',nombre.archivo,sep=''),csv=T)
+		}
 		print(alma)
+		
 		cat('',fill=TRUE)
 		cat('*** El contraste de hipotesis se ha hecho desde la matriz listwise ***',fill=TRUE)
 		cat('',fill=TRUE)
@@ -4322,6 +4349,7 @@ ncvTest.lmB = function(model, var.formula,dat) {
 	res=list(tablas=tablas, salida=salida)
 	if(grafica){
 	  if(is.na(lim[1])) lim=1
+	  if(!is.na(covariante[1]) & !to.pdf) x11()
 	  grafica.ic.fnc(tablas,MCintra=salida[[2]],gli=salida[[3]],ylim=ylim,lim=lim,to.pdf=to.pdf,
 		size.font,apaisado,nombre, color)
 	}
@@ -4809,7 +4837,7 @@ ncvTest.lmB = function(model, var.formula,dat) {
 #  mix.mod = mixed.model.fnc(lexde.cl,factores, random.sujeto=T, random.item=T,
 #      covariante=NA, grafica=T)
 # -------------------------------------------------------------------------------
-mixed.model.fnc=function(datos=NA, fac.inter=NA,fac.intra=NA, random.sujeto=TRUE,
+mixed.model.fnc=function(datos=NA, vd=NA, fac.inter=NA,fac.intra=NA, random.sujeto=TRUE,
  		fac.random=NA,covariante=NA, random.item=FALSE,  tipo=3, grafica=FALSE,poshoc=NA, 
  		silente=FALSE, latex=FALSE, accuracy=FALSE){
  		
@@ -4838,22 +4866,34 @@ mixed.model.fnc=function(datos=NA, fac.inter=NA,fac.intra=NA, random.sujeto=TRUE
 	}
 
 	dat.st=datos
+	nombres=names(dat.st)
+	
+	chivato_='sujeto' %in% nombres
+	if(!chivato_){
+		cat('',fill=TRUE)
+		cat('*** Error. No existe la variable sujeto en la base de datos. Esta ***',fill=TRUE)
+		cat('*** variable es obligatoria. Cambia apropiadamente el nombre si .',fill=TRUE)
+		cat('*** existe otra variable con esa funcion de indentificacio.',fill=TRUE)
+		cat('',fill=TRUE)
+		stop()
+	}		
+	
 	dat.st$sujeto=as.factor(as.character(dat.st$sujeto))
-	nombres=names(datos)
 	chivato_='item' %in% nombres
 	if(!chivato_ & random.item[1]){
 		cat('',fill=TRUE)
 		cat('*** Error. No existe la variable item en tu base de datos. ***',fill=TRUE)
 		cat('*** Modifica random.item a FALSE.',fill=TRUE)
-		stop()
 		cat('',fill=TRUE)
+		stop()
 	}
 	if(chivato_ & random.item) dat.st$item=as.factor(as.character(dat.st$item))
 	
     check.fac.intra.fnc(fac.intra)
     check.factores.fnc(fac.inter,fac.intra)
 	check.niveles.fnc(datos, fac.inter=fac.inter, fac.intra=fac.intra)
-    
+    dat.st=check.fac.intra(dat.st, fac.intra)	
+
 	if(latex){
 		cat('',fill=TRUE)
 		cat('*** mixed.model.fnc no admite por el momento el argumento latex ***',fill=TRUE)
@@ -4875,9 +4915,9 @@ mixed.model.fnc=function(datos=NA, fac.inter=NA,fac.intra=NA, random.sujeto=TRUE
 		n.inter=0
 	 }
 	# FIN CHECK SI EXISTEN LOS FACTORES INTER
-	
+
 	# CHECK SI EXISTE LA VARIABLE VD
-	if (sum('vd' %in% names(dat.st))==0){
+	if (is.na(vd[1]) & sum('vd' %in% names(dat.st))==0){
 		cat('',fill=TRUE)
 		cat('*** Error. No existe la variable obligatoria vd.             ***',fill=TRUE)
 		cat('*** Si por ejemplo quisieras modelar el tiempo de reaccion,  ***',fill=TRUE)
@@ -4887,6 +4927,21 @@ mixed.model.fnc=function(datos=NA, fac.inter=NA,fac.intra=NA, random.sujeto=TRUE
 		stop()
 	}
 	
+	if(!is.na(vd[1])){
+		indice=vd %in% nombres
+		if(sum(indice)!= 1){
+			cat('',fill=TRUE)
+			cat('*** Error. No existe la variable incluida en el argumento vd ***',fill=TRUE)		
+			cat('',fill=TRUE)
+			stop( )
+		}else{
+			hay.vd=match('vd',nombres)
+			if(!is.na(hay.vd[1])) dat.st=dat.st[,-c(hay.vd)]
+			que.col=match(vd,names(dat.st))
+			names(dat.st)[que.col]='vd'
+		}
+	}
+
  # CHECK SI VD ES LOGIT
 	tabla=data.frame(with(dat.st, table(vd)))
 	if(dim(tabla)[1]==2 & !accuracy){
@@ -4946,41 +5001,77 @@ mixed.model.fnc=function(datos=NA, fac.inter=NA,fac.intra=NA, random.sujeto=TRUE
     # CONTROLA COVARIANTE
     #-------------------------------------------------------------------------------
     if(is.na(covariante[1])){ # Si no hay covariante
-	if(n.factores==1) { modelo1=paste('vd','~',factores[1],'+',sep='')
-	    mod.lis=paste('vd','~',factores[1],' | sujeto',sep='')}
-	if(n.factores==2) { modelo1=paste('vd','~',factores[1],'*',factores[2],'+',sep='')
-	    mod.lis=paste('vd','~',factores[1],'*',factores[2],' | sujeto',sep='')}
-	if(n.factores==3) { modelo1=paste('vd','~',factores[1],'*',factores[2],'*',
-	    factores[3],'+',sep='')
-	    mod.lis=paste('vd','~',factores[1],'*',factores[2],'*',factores[3],' | sujeto',sep='')}
-	if(n.factores==4) { modelo1=paste('vd','~',factores[1],'*',factores[2],'*',
-	      factores[3],'*',factores[4],'+',sep='')
-	    mod.lis=paste('vd','~',factores[1],'*',factores[2],'*',factores[3],'*',
-	    factores[4],' | sujeto',sep='')}
+		if(n.factores==1) { modelo1=paste('vd','~',factores[1],'+',sep='')
+			mod.lis=paste('vd','~',factores[1],' | sujeto',sep='')}
+		if(n.factores==2) { modelo1=paste('vd','~',factores[1],'*',factores[2],'+',sep='')
+			mod.lis=paste('vd','~',factores[1],'*',factores[2],' | sujeto',sep='')}
+		if(n.factores==3) { modelo1=paste('vd','~',factores[1],'*',factores[2],'*',
+			factores[3],'+',sep='')
+			mod.lis=paste('vd','~',factores[1],'*',factores[2],'*',factores[3],' | sujeto',sep='')}
+		if(n.factores==4) { modelo1=paste('vd','~',factores[1],'*',factores[2],'*',
+			factores[3],'*',factores[4],'+',sep='')
+			mod.lis=paste('vd','~',factores[1],'*',factores[2],'*',factores[3],'*',
+				factores[4],' | sujeto',sep='')}
 
-	rand0='(1|sujeto)';
-	modelo00=paste('vd','~ 1 + ',rand0,sep='')
-	modelo0=paste(modelo1,rand0,sep='')
-	if(!is.na(fac.random[1])){
-	  rand1=paste('(',fac.random[1],'|sujeto)',sep='')
-	  modelo1=paste(modelo1,rand1,sep='')
-	}else{
-	  modelo1=modelo0
-	}
+		rand0='(1|sujeto)';
+		modelo00=paste('vd','~ 1 + ',rand0,sep='')
+		modelo0=paste(modelo1,rand0,sep='')
+		if(!is.na(fac.random[1])){
+			rand1=paste('(',fac.random[1],'|sujeto)',sep='')
+			modelo1=paste(modelo1,rand1,sep='')
+		}else{
+			modelo1=modelo0
+		}
       }else{ # Si hay covariante
-	if(n.factores==1) modelo1=paste('vd','~',covariante,'+',factores[1],'+',sep='')
-	if(n.factores==2) modelo1=paste('vd','~',covariante,'+',factores[1],'*',factores[2],'+',sep='')
-	if(n.factores==3) modelo1=paste('vd','~',covariante,'+',factores[1],'*',factores[2],'*',
-	      factores[3],'+',sep='')
-	if(n.factores==4) modelo1=paste('vd','~',covariante,'+',factores[1],'*',factores[2],'*',
-	      factores[3],'*',factores[4],'+',sep='')
-	rand0='(1|sujeto)';
-	modelo00=paste('vd','~ 1 + ',rand0,sep='')
-	modelo0=paste(modelo1,rand0,sep='')
-	if(!is.na(fac.random[1])){
-	  rand1=paste('(',fac.random[1],'|sujeto)',sep='')
-	  modelo1=paste(modelo1,rand1,sep='')
-	}
+		if(n.intra==0){
+			if(n.inter==1) modelo1=paste('vd','~',covariante,'+',fac.inter[1],'+',sep='')
+			if(n.inter==2) modelo1=paste('vd','~',covariante,'+',fac.inter[1],'*',fac.inter[2],'+',sep='')
+			if(n.inter==3) modelo1=paste('vd','~',covariante,'+',fac.inter[1],'*',fac.inter[2],'*',
+					fac.inter[3],'+',sep='')
+		}
+		if(n.intra==1){
+			fw=names(fac.intra)
+			if(n.inter==0) modelo1=paste('vd','~',covariante,'*',fw[1],'+',sep='')
+			if(n.inter==1) modelo1=paste('vd','~',covariante,'*',fw[1],'+',fac.inter[1],'*',fw[1],'+',sep='')
+			if(n.inter==2) modelo1=paste('vd','~',covariante,'*',fw[1],'+',
+					fac.inter[1],'*',fac.inter[2],'*',fw[1],'+',sep='')
+			if(n.inter==3) modelo1=paste('vd','~',covariante,'*',fw[1],'+',
+					fac.inter[1],'*',fac.inter[2],'*',fac.inter[3],'*',fw[1],'+',sep='')
+		}
+		
+		if(n.intra==2){
+			fw=names(fac.intra)
+			if(n.inter==0) modelo1=paste('vd','~',covariante,'*',fw[1],'*',fw[2],'+',sep='')			
+			if(n.inter==1) modelo1=paste('vd','~',covariante,'*',fw[1],'*',fw[2],'+',
+					fac.inter[1],'*',fw[1],'*',fw[2],'+',sep='')
+					
+			if(n.inter==2) modelo1=paste('vd','~',covariante,'*',fw[1],'*',fw[2],'+',
+					fac.inter[1],'*',fac.inter[2],'*',fw[1],'*',fw[2],'+',sep='')	
+					
+			if(n.inter==3) modelo1=paste('vd','~',covariante,'*',fw[1],'*',fw[2],'+',
+					fac.inter[1],'*',fac.inter[2],'*',fac.inter[3],'*',fw[1],'*',fw[2],'+',sep='')
+		}		
+	
+		if(n.intra==3){
+			fw=names(fac.intra)
+			if(n.inter==0) modelo1=paste('vd','~',covariante,'*',fw[1],'*',fw[2],'*',fw[3],'+',sep='')						
+			if(n.inter==1) modelo1=paste('vd','~',covariante,'*',fw[1],'*',fw[2],'*',fw[3],'+',
+					fac.inter[1],'*',fw[1],'*',fw[2],'*',fw[3],'+',sep='')
+					
+			if(n.inter==2) modelo1=paste('vd','~',covariante,'*',fw[1],'*',fw[2],'*',fw[3],'+',
+					fac.inter[1],'*',fac.inter[2],'*',fw[1],'*',fw[2],'*',fw[3],'+',sep='')	
+					
+			if(n.inter==3) modelo1=paste('vd','~',covariante,'*',fw[1],'*',fw[2],fw[3],'+',
+					fac.inter[1],'*',fac.inter[2],'*',fac.inter[3],'*',fw[1],'*',fw[2],'*',fw[3],'+',sep='')
+		}				
+
+		rand0='(1|sujeto)';
+		modelo00=paste('vd','~ 1 + ',rand0,sep='')
+		modelo0=paste(modelo1,rand0,sep='')
+		if(!is.na(fac.random[1])){
+			rand1=paste('(',fac.random[1],'|sujeto)',sep='')
+			modelo1=paste(modelo1,rand1,sep='')
+		}
     } # FIN DE COVARIANTE en random sujeto
     #-------------------------------------------------------------------------------
 
@@ -5037,25 +5128,61 @@ mixed.model.fnc=function(datos=NA, fac.inter=NA,fac.intra=NA, random.sujeto=TRUE
 	  			modelo2=paste(modelo2,rand1,sep='')
 	 		}
      	}else{
-			if(n.factores==1) modelo2=paste('vd','~',covariante,'+',factores[1],'+',sep='')
-			if(n.factores==2) modelo2=paste('vd','~',covariante,'+',factores[1],'*',factores[2],'+',sep='')
-			if(n.factores==3) modelo2=paste('vd','~',covariante,'+',factores[1],'*',factores[2],'*',
-	      		factores[3],'+',sep='')
-			if(n.factores==4) modelo2=paste('vd','~',covariante,'+',factores[1],'*',factores[2],'*',
-	      		factores[3],'*',factores[4],'+',sep='')
-			if(is.na(fac.random[1])){
-	 			rand='(1|sujeto)+ (1|item)'; rand0=rand
-			}else{
-	  			rand=paste('(',fac.random[1],'|sujeto)+(1|item)',sep='')
-				rand0='(1|sujeto)+ (1|item)'
-			}
-			modelo2a=modelo2
-      		modelo2=paste(modelo2,rand,sep='')
-			# Random
-			rand0='(1|sujeto)+(1|item)';
-			modelo00.b=paste('vd','~ 1 + ',rand0,sep='')
-			modelo0.b=paste(modelo2a,rand0,sep='')
-     	 } # FIN DE COVARIANTE en random sujeto e item
+ 		if(n.intra==0){
+			if(n.inter==1) modelo2=paste('vd','~',covariante,'+',fac.inter[1],'+',sep='')
+			if(n.inter==2) modelo2=paste('vd','~',covariante,'+',fac.inter[1],'*',fac.inter[2],'+',sep='')
+			if(n.inter==3) modelo2=paste('vd','~',covariante,'+',fac.inter[1],'*',fac.inter[2],'*',
+					fac.inter[3],'+',sep='')
+		}
+		if(n.intra==1){
+			fw=names(fac.intra)
+			if(n.inter==0) modelo2=paste('vd','~',covariante,'*',fw[1],'+',sep='')
+			if(n.inter==1) modelo2=paste('vd','~',covariante,'*',fw[1],'+',fac.inter[1],'*',fw[1],'+',sep='')
+			if(n.inter==2) modelo2=paste('vd','~',covariante,'*',fw[1],'+',
+					fac.inter[1],'*',fac.inter[2],'*',fw[1],'+',sep='')
+			if(n.inter==3) modelo2=paste('vd','~',covariante,'*',fw[1],'+',
+					fac.inter[1],'*',fac.inter[2],'*',fac.inter[3],'*',fw[1],'+',sep='')
+		}
+		
+		if(n.intra==2){
+			fw=names(fac.intra)
+			if(n.inter==0) modelo2=paste('vd','~',covariante,'*',fw[1],'*',fw[2],'+',sep='')			
+			if(n.inter==1) modelo2=paste('vd','~',covariante,'*',fw[1],'*',fw[2],'+',
+					fac.inter[1],'*',fw[1],'*',fw[2],'+',sep='')
+					
+			if(n.inter==2) modelo2=paste('vd','~',covariante,'*',fw[1],'*',fw[2],'+',
+					fac.inter[1],'*',fac.inter[2],'*',fw[1],'*',fw[2],'+',sep='')	
+					
+			if(n.inter==3) modelo2=paste('vd','~',covariante,'*',fw[1],'*',fw[2],'+',
+					fac.inter[1],'*',fac.inter[2],'*',fac.inter[3],'*',fw[1],'*',fw[2],'+',sep='')
+		}		
+	
+		if(n.intra==3){
+			fw=names(fac.intra)
+			if(n.inter==0) modelo2=paste('vd','~',covariante,'*',fw[1],'*',fw[2],'*',fw[3],'+',sep='')						
+			if(n.inter==1) modelo2=paste('vd','~',covariante,'*',fw[1],'*',fw[2],'*',fw[3],'+',
+					fac.inter[1],'*',fw[1],'*',fw[2],'*',fw[3],'+',sep='')
+					
+			if(n.inter==2) modelo2=paste('vd','~',covariante,'*',fw[1],'*',fw[2],'*',fw[3],'+',
+					fac.inter[1],'*',fac.inter[2],'*',fw[1],'*',fw[2],'*',fw[3],'+',sep='')	
+					
+			if(n.inter==3) modelo2=paste('vd','~',covariante,'*',fw[1],'*',fw[2],fw[3],'+',
+					fac.inter[1],'*',fac.inter[2],'*',fac.inter[3],'*',fw[1],'*',fw[2],'*',fw[3],'+',sep='')
+		}	
+		
+		if(is.na(fac.random[1])){
+	 		rand='(1|sujeto)+ (1|item)'; rand0=rand
+		}else{
+	  		rand=paste('(',fac.random[1],'|sujeto)+(1|item)',sep='')
+			rand0='(1|sujeto)+ (1|item)'
+		}
+		modelo2a=modelo2
+      	modelo2=paste(modelo2,rand,sep='')
+		# Random
+		rand0='(1|sujeto)+(1|item)';
+		modelo00.b=paste('vd','~ 1 + ',rand0,sep='')
+		modelo0.b=paste(modelo2a,rand0,sep='')
+	} # FIN DE COVARIANTE en random sujeto e item
 
     	# ESTIMA MODELO LMER PARA RANDOM SUJETO ITEM Y FACTOR EN SUJETO
     	if(!accuracy){
@@ -6530,7 +6657,24 @@ calcula.intraclass.fnc=function(estimado00,random.sujeto,random.item){
 #---------------------------------------------------------------------------
 # clean.VD.fnc(dat,'vd',Z=FALSE,que.corte=2.5)
 #---------------------------------------------------------------------------
- limpia.vd.fnc=function(datos,vd,que.factor,Z=TRUE,que.corte=2,que.minimo, que.maximo=NA){
+ limpia.vd.fnc=function(datos,vd=NA,que.factor,Z=TRUE,que.corte=2,que.minimo, que.maximo=NA){
+
+	dat=datos
+	crea.cat.fnc('LIMPIA LA VARIABLE DEPENDIENTE POR SUJETO Y CONDICION')
+	check.que.factor(que.factor)
+
+	nombres=names(datos)
+	indice='vd' %in% nombres
+	if(sum(indice)==1) vd='vd'
+	if(is.na(vd[1])){
+		cat('',fill=TRUE)
+		cat('*** Error. No has incluido el argumento vd y no existe ninguna variable con',fill=TRUE)
+		cat('*** ese nombre en la base de datos. Incluye en el argumento vd el nombre de',fill=TRUE)
+		cat('*** la variable cuantitativa que deseas limpiar por sujeto y condicion.',fill=TRUE)
+		cat('',fill=TRUE)
+		stop()
+	}
+
 	# Check si existe la variable RT y la sustituye
 	RT_=FALSE
 	if(vd=='RT'){
@@ -6538,12 +6682,8 @@ calcula.intraclass.fnc=function(estimado00,random.sujeto,random.item){
 	  datos=cambia.nombre.var.fnc(datos,'RT','RT_2',silente=TRUE)
 	  vd='RT_2'
 	}
+	RT=vd	
 	
-	RT=vd
-	dat=datos
-	crea.cat.fnc('LIMPIA LA VARIABLE DEPENDIENTE POR SUJETO Y CONDICION')
-	check.que.factor(que.factor)
-
  # Pone un orden por record
 	dat$index=1:dim(dat)[1]
 	n.dim=dim(dat)[1]
@@ -6771,7 +6911,8 @@ calcula.intraclass.fnc=function(estimado00,random.sujeto,random.item){
       dat.st=dat.st[,c(vd,que.factor)]
       lf=que.factor
       acumula=lf[1]
-      for(i in 2:length(que.factor)) acumula=paste(acumula,'+',lf[i], collapse ='+') 
+      if(length(que.factor) > 1)
+		for(i in 2:length(que.factor)) acumula=paste(acumula,'+',lf[i], collapse ='+') 
       modelo=paste('.~',acumula,sep='')
     
       if(estadistico=='media')
@@ -7758,6 +7899,7 @@ calcula.intraclass.fnc=function(estimado00,random.sujeto,random.item){
 	check.fac.intra.fnc(fac.intra)
 	check.factores.fnc(fac.inter,fac.intra)
 	check.niveles.fnc(dat.st, fac.inter=fac.inter, fac.intra=fac.intra)
+	dat.st=check.fac.intra(dat.st, fac.intra)	
 
   # CHECK SI HAY ITEM
   if(is.na(hay.item[1])) {
@@ -7969,7 +8111,7 @@ calcula.intraclass.fnc=function(estimado00,random.sujeto,random.item){
   			fac.inter=new.fac.inter,silente=TRUE)
   		anova.x.item=try(Anova.fnc(new.x.item,fac.intra=new.fac.intra,fac.inter=new.fac.inter,
 				tipo=tipo, col.empieza.mr=1, grafica=FALSE,silente=TRUE),silent=TRUE)
-		if(class(anova.x.item)=='try-error'){
+		if(class(anova.x.item)[1]=='try-error'){
 			cat('', fill=TRUE)
 			cat('*** Error. Ha habido un problema con los datos por item. ***',fill=TRUE)  
 			cat('*** Esta es la matriz que no se ha podido analizar.       ***',fill=TRUE)  
@@ -7986,7 +8128,7 @@ calcula.intraclass.fnc=function(estimado00,random.sujeto,random.item){
 		new.inter=factores
 		anova.x.item=try(Anova.fnc(x.item,fac.intra=NA,fac.inter=factores,vd='vd',
 				tipo=3, grafica=FALSE,silente=TRUE),silent=TRUE)
-		if(class(anova.x.item)=='try-error'){
+		if(class(anova.x.item)[1]=='try-error'){
 			cat('', fill=TRUE)
 			cat('*** Error. Ha habido un problema con los datos por item. ***',fill=TRUE)  
 			cat('*** Esta es la matriz que no se ha podido analizar.       ***',fill=TRUE)  
@@ -11288,7 +11430,7 @@ regresion.logistica.fnc=function(datos, variables=NA, grupo, paso.a.paso=TRUE,
 #
 #---------------------------------------------------------------------------
  desapila.los.datos.fnc=function(datos.apilados,fac.intra=NA,fac.inter=NA,por.item=NA,
-	silente=FALSE){
+	silente=FALSE, covariante=NA){
    dat_=datos.apilados
    suj=match('sujeto',names(dat_))
    ite=match('item',names(dat_))
@@ -11372,7 +11514,8 @@ regresion.logistica.fnc=function(datos, variables=NA, grupo, paso.a.paso=TRUE,
 				cat('',fill=TRUE)
 				stop()
 			}	
-			dat.us=unstack(x.sujeto,form=formula)			
+			dat.us=unstack(x.sujeto,form=formula)	
+			row.names(dat.us)=as.character(unique(x.sujeto$sujeto))
 			if(error){
 			    cat('*** N SUJETOS:',dim(dat.us)[1],fill=TRUE)
 			    cat('*** Se han eliminado',(n.before-n.after),'sujetos',fill=TRUE)
@@ -11394,7 +11537,9 @@ regresion.logistica.fnc=function(datos, variables=NA, grupo, paso.a.paso=TRUE,
 				cat('',fill=TRUE)
 				stop()
 			}				
-			dat.us=unstack(x.item,form=formula)			
+			dat.us=unstack(x.item,form=formula)	
+			row.names(dat.us)=as.character(unique(x.item$item))
+			
 			if(error) {
 			    cat('*** N ITEMS:',dim(dat.us)[1],fill=TRUE)
 			    cat('*** Se han eliminado',(n.before-n.after),'items',fill=TRUE)
@@ -11538,7 +11683,28 @@ regresion.logistica.fnc=function(datos, variables=NA, grupo, paso.a.paso=TRUE,
    		}
 	}
 	# FIN SI HAY ITEMS
-
+	if(!is.na(covariante[1])){
+		que.fac_=names(datos.apilados)[1]
+		cova.dat_=agrega.los.datos.fnc(datos.apilados, vd=covariante,
+			que.factor=que.fac_, silente=TRUE)
+		if(error){
+			if(!is.na(suj[1])){
+				dat.us$sujeto=row.names(dat.us)
+				dat.us=fundir.objetos.fnc(dat.us,cova.dat_,mas.var=TRUE, 
+					que.var='sujeto', todos.2=FALSE)
+				dat.us=dat.us[,-c(1)]
+			}
+			if(!is.na(ite[1])){
+				dat.us$item=row.names(dat.us)
+				dat.us=fundir.objetos.fnc(dat.us,cova.dat_,mas.var=TRUE, 
+					que.var='item', todos.2=FALSE)
+				dat.us=dat.us[,-c(1)]
+			}			
+		}else{
+			dat.us=cbind(dat.us,cova.dat_[,-c(1)])
+		}
+	}
+	
 	if(!silente){
 		cat('',fill=TRUE)
 		cat('*** Esta es la cabecera de tus datos desapilados ***',fill=TRUE)
@@ -14589,6 +14755,7 @@ descriptivos.fnc=function(datos=NA,variables=NA, que.factor=NA, grafica=FALSE,
 
 	if(tipo==1 & residuales) residuales=FALSE
 	suppressWarnings(require(ltm, quietly=TRUE))
+	
 	nombres=names(datos)
 	datos$ID=1:dim(datos)[1]
 	if(is.na(variables[1])) variables=nombres
@@ -14658,10 +14825,13 @@ descriptivos.fnc=function(datos=NA,variables=NA, que.factor=NA, grafica=FALSE,
 			cat('',fill=TRUE)
 			cat('***              CALCULANDO PUNTUACIONES FACTORIALES               ***',fill=TRUE)
 			cat('',fill=TRUE)
+			try(detach(package:psych),silent=TRUE)
+			try(require(ltm,quietly=TRUE))	
 			pred=factor.scores(result, resp.patterns = dat_)$score.dat
 		}
 		if(guarda.pf){
 			pred=factor.scores(result, resp.patterns = dat_)$score.dat
+			suppressWarnings(require(psych, quietly=TRUE))
 			X11(); print(multi.hist(pred$z1, 
 				main='Histograma, Densidad y Ajuste a la normal'))
 			pred$ID=1:dim(pred)[1]
@@ -14702,9 +14872,12 @@ descriptivos.fnc=function(datos=NA,variables=NA, que.factor=NA, grafica=FALSE,
 			cat('',fill=TRUE)
 			cat('***              CALCULANDO PUNTUACIONES FACTORIALES               ***',fill=TRUE)
 			cat('',fill=TRUE)
+			try(detach(package:psych),silent=TRUE)
+			try(require(ltm,quietly=TRUE))				
 			pred=factor.scores(mod.2p, resp.patterns = dat_)$score.dat
 		}
 		if(guarda.pf){
+			suppressWarnings(require(psych, quietly=TRUE))	
 			X11(); print(multi.hist(pred$z1, 
 				main='Histograma, Densidad y Ajuste a la normal'))
 			pred$ID=1:dim(pred)[1]
@@ -14753,9 +14926,12 @@ descriptivos.fnc=function(datos=NA,variables=NA, que.factor=NA, grafica=FALSE,
 			cat('',fill=TRUE)
 			cat('***              CALCULANDO PUNTUACIONES FACTORIALES               ***',fill=TRUE)
 			cat('',fill=TRUE)
+			try(detach(package:psych),silent=TRUE)
+			try(require(ltm,quietly=TRUE))							
  			pred=factor.scores(mod.3p, resp.patterns = dat_)$score.dat
 		}
 		if(guarda.pf){
+			suppressWarnings(require(psych, quietly=TRUE))		
 			X11(); print(multi.hist(pred$z1, 
 				main='Histograma, Densidad y Ajuste a la normal'))
 			pred$ID=1:dim(pred)[1]
@@ -17397,6 +17573,54 @@ fiabilidad.interjueces.fnc=function(datos, item.x.jueces=TRUE,
 	}
  }
 #---------------------------------------------------------------------------
-    
+
+# -------------------------------------------------------------------------------
+# Check if fac.intra content exist in data
+# -------------------------------------------------------------------------------
+ check.fac.intra=function(datos.apilados,fac.intra){
+	nombres=names(datos.apilados)
+	fw=names(fac.intra)
+	indice=fw %in% nombres
+	if(sum(indice)!= length(fac.intra)){
+		que.var=fw[indice]
+		lab1=paste('*** Error. En la base de datos apilada introducida, no existen',sep='')
+		lab2=paste('*** las siguientes variables declaradas en fac.intra:',sep='')
+		cat('',fill=TRUE)
+		cat(lab1,fill=TRUE)
+		cat(lab2,fill=TRUE)
+		cat('        ',que.var,fill=TRUE)
+		cat('*** Comprueba que el nombre del factor incluido en fac.intra existe realmente.',fill=TRUE)
+		cat('',fill=TRUE)		
+		stop( )
+	}
+	for(i in 1:length(fw)){
+		if(!is.factor(datos.apilados[,fw[i]])) datos.apilados[,fw[i]]=factor(datos.apilados[,fw[i]]) 
+	}	
+	for(i in 1:length(fw)){
+		level_=levels(datos.apilados[,fw[i]])
+		indice=level_ %in% fac.intra[[i]]
+		if(sum(indice)!=length(level_)){
+			lab1=paste('*** Error. Los niveles del factor de medidas repetidas:',fw[i],'de la base',sep=' ')
+			lab2=paste('*** de datos no coinciden con los niveles declarados en fac.intra.',sep='')
+			cat('',fill=TRUE)
+			cat(lab1,fill=TRUE)
+			cat(lab2,fill=TRUE)
+			cat('',fill=TRUE)
+			cat('*** Niveles del factor en la base de datos:',level_,fill=TRUE)
+			cat('*** Este es el contenido de fac.intra:',fill=TRUE)
+			print(fac.intra)
+			cat('*** Modifica el contenido de fac.intra o recodifica los niveles de dicho factor.',fill=TRUE)
+			cat('',fill=TRUE)			
+			stop( )
+		}
+	}	
+	for(i in 1:length(fw)){
+		datos.apilados=reordena.factor.fnc(datos.apilados, que.factor=fw[i],
+				niveles=fac.intra[[i]], silente=TRUE)
+	}		
+	return(datos.apilados)
+ }	
+# -------------------------------------------------------------------------------
+	
 
 
