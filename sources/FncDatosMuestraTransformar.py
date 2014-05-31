@@ -42,6 +42,7 @@ class FncDatosMuestraTransformar():
 		QtCore.QObject.connect(self.dialogUi.buttonBox, QtCore.SIGNAL("rejected()"), self.cancel, QtCore.Qt.UniqueConnection)
 
 
+
 	def acceptMuestra(self):
 		print ("*Accept*")
 		identificacion = self.dialogUi.id_text.text()
@@ -79,4 +80,48 @@ class FncDatosMuestraTransformar():
 		self.dialogUi.setWindowTitle("Transformar")
 		self.dialogUi.show()
 
+		# Inicializo los combobox
+		def f(x):
+			print x
+		rinterface.set_writeconsole(f)
+		n_items = "length(names(datos))"
+		n_items = robjects.r(n_items)
+		n_items = n_items[0]
+		self.dialogUi.cb_variable.clear()
+		for i in range(n_items):
+			item_factor = "names(datos)[" + str(i+1) + "]"
+			item_factor = robjects.r(item_factor)
+			self.dialogUi.cb_variable.addItem(str(item_factor[0]))
 
+		rinterface.set_writeconsole(rinterface.consolePrint)
+
+		# Senyales de aceptar y cancelar
+		QtCore.QObject.connect(self.dialogUi.buttonBox, QtCore.SIGNAL("accepted()"), self.acceptTransformar, QtCore.Qt.UniqueConnection)
+		QtCore.QObject.connect(self.dialogUi.buttonBox, QtCore.SIGNAL("rejected()"), self.cancel, QtCore.Qt.UniqueConnection)
+
+
+
+	def acceptTransformar(self):
+		print ("*Accept*")
+
+		variable = str(self.dialogUi.cb_variable.currentText())
+		tipo = self.dialogUi.le_tipo_nuevo.text()
+		formato = self.dialogUi.le_formato.text()
+		
+
+		if (tipo == "fecha"):
+			comando = "datos=transforma.variable.fnc(datos, variable='" + variable + "',nuevo.tipo='" + tipo + "', formato='" + formato + "')"
+		else:
+			comando = "datos=transforma.variable.fnc(datos, variable='" + variable + "',nuevo.tipo='" + tipo + "')"
+		
+		
+		self.ui.text_result.append("> " + comando)
+
+		def f(x):
+			self.ui.text_result.textCursor().insertText(x)
+
+		rinterface.set_writeconsole(f)
+		resultado = robjects.r(comando)
+		self.ui.text_result.append(str(resultado))
+		
+		rinterface.set_writeconsole(rinterface.consolePrint)

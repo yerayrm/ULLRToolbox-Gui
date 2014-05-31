@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>480</width>
-    <height>177</height>
+    <height>206</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,21 +22,30 @@
         <string>Selecciona la variable y establece el nuevo tipo:</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="1" column="2">
-         <widget class="QLineEdit" name="le_tipo_actual"/>
-        </item>
         <item row="1" column="1">
          <widget class="QComboBox" name="cb_variable">
           <property name="minimumSize">
            <size>
-            <width>150</width>
+            <width>200</width>
             <height>0</height>
            </size>
           </property>
          </widget>
         </item>
-        <item row="1" column="3">
+        <item row="1" column="2">
          <widget class="QLineEdit" name="le_tipo_nuevo"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="title">
+        <string>Formato (Solo si el nuevo tipo es fecha):</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <widget class="QLineEdit" name="le_formato"/>
         </item>
        </layout>
       </widget>
