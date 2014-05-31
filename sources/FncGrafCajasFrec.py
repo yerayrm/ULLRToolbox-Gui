@@ -139,3 +139,45 @@ class FncGrafCajasFrec():
 		self.dialogUi = self.d_frec
 		self.dialogUi.setWindowTitle("Frecuencias")
 		self.dialogUi.show()
+
+		# Abro el multiselector
+		self.dialogUi.var_select.clear()
+		QtCore.QObject.connect(self.dialogUi.pushMultiSelector, QtCore.SIGNAL("clicked()"), self.openMultiSelector, QtCore.Qt.UniqueConnection)
+
+		# Signals
+		QtCore.QObject.connect(self.dialogUi.buttonBox, QtCore.SIGNAL("accepted()"), self.acceptFrecuencias, QtCore.Qt.UniqueConnection)
+		QtCore.QObject.connect(self.dialogUi.buttonBox, QtCore.SIGNAL("rejected()"), self.cancel, QtCore.Qt.UniqueConnection)
+
+
+
+
+	def acceptFrecuencias(self):
+		print ("*Accept*")
+
+		variables = "', '".join(self.listMulti)
+		variables = "c('" + variables + "')"
+		grafica = ""
+		prop = ""
+
+		if self.dialogUi.cb_grafica.isChecked():
+			grafica = ", grafica=T"
+
+		if self.dialogUi.cb_tabla.isChecked():
+			variables = ":".join(self.listMulti)
+			variables = "'" + variables + "'"
+
+		if self.dialogUi.cb_frecuencias.isChecked():
+			prop = ", prop=T"
+		
+		comando = "frecuencias.fnc(datos, variables=" + variables + grafica + prop + ")"
+
+		self.ui.text_result.append("> " + comando)
+
+		def f(x):
+			self.ui.text_result.textCursor().insertText(x)
+
+		rinterface.set_writeconsole(f)
+		resultado = robjects.r(comando)
+		self.ui.text_result.append(str(resultado))
+		
+		rinterface.set_writeconsole(rinterface.consolePrint)

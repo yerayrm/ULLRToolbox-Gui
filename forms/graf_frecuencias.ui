@@ -33,10 +33,10 @@
        </property>
        <layout class="QGridLayout" name="gridLayout_5">
         <item row="0" column="2">
-         <widget class="QPushButton" name="pushMultiSelector_2">
+         <widget class="QPushButton" name="pushMultiSelector">
           <property name="minimumSize">
            <size>
-            <width>10</width>
+            <width>30</width>
             <height>0</height>
            </size>
           </property>
@@ -78,7 +78,7 @@
          </spacer>
         </item>
         <item row="0" column="1">
-         <widget class="QLineEdit" name="var_select_2">
+         <widget class="QLineEdit" name="var_select">
           <property name="minimumSize">
            <size>
             <width>260</width>
@@ -100,21 +100,21 @@
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
-         <widget class="QCheckBox" name="checkBox">
+         <widget class="QCheckBox" name="cb_grafica">
           <property name="text">
            <string>Mostrar Gráfica</string>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QCheckBox" name="checkBox_2">
+         <widget class="QCheckBox" name="cb_tabla">
           <property name="text">
            <string>Tabla de contigencia</string>
           </property>
          </widget>
         </item>
         <item row="0" column="2">
-         <widget class="QCheckBox" name="checkBox_3">
+         <widget class="QCheckBox" name="cb_frecuencias">
           <property name="text">
            <string>Frecuencias relativas</string>
           </property>
