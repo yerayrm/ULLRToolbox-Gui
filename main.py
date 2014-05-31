@@ -24,6 +24,9 @@ from sources.FncAnlsAnova import FncAnlsAnova
 from sources.FncAnlsRegresion import FncAnlsRegresion
 from sources.QTextEditCustom import QTextEditCustom
 
+import rpy2.rinterface as rinterface
+import time
+import threading
 
 import sys
 import resource_rc
@@ -73,7 +76,7 @@ def main(argv=None):
     fncDatosTipificar   = FncDatosTipificar(ui, d_tipificar, d_multiselector)
     fncDatosRecodificar = FncDatosRecodificar(ui, d_recodificar)
     fncDatosMuesTra     = FncDatosMuestraTransformar(ui, d_muestra, d_transformar)
-    fncGrafCajasFrec    = FncGrafCajasFrec(ui, d_cajas, d_frec)
+    fncGrafCajasFrec    = FncGrafCajasFrec(ui, d_cajas, d_frec, d_multiselector)
     fncGrafDispersion   = FncGrafDispersion(ui, d_dispersion)
     fncGrafPercenHisto  = FncGrafPercenHisto(ui, d_percentiles, d_histogramas)
     fncAnlsDescriptivos = FncAnlsDescriptivos(ui, d_descr_univar, d_descr_multiple)
@@ -90,5 +93,7 @@ def main(argv=None):
     return app.exec_()
 
 
+
+
 if __name__ == '__main__':
-    main()
+    main()    

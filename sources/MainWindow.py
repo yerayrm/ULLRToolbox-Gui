@@ -9,6 +9,10 @@ class MainWindow():
 	def __init__(self, ui):
 		self.ui = ui
 
+		timer = QtCore.QTimer(self.ui)
+		QtCore.QObject.connect(timer, QtCore.SIGNAL("timeout()"), self.update)
+		timer.start(1000)
+
 		# signals in main window
 		QtCore.QObject.connect(self.ui.button_ejecutar, QtCore.SIGNAL("clicked()"), self.insertCommand)
 
@@ -19,6 +23,11 @@ class MainWindow():
 		# init methods
 		self.initToolbox()
 		self.initTable()
+
+
+
+	def update(self):
+		rinterface.process_revents()
 
 
 
