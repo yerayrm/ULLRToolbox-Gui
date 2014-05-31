@@ -52,7 +52,7 @@
          <widget class="QPushButton" name="pushMultiSelector">
           <property name="minimumSize">
            <size>
-            <width>10</width>
+            <width>30</width>
             <height>0</height>
            </size>
           </property>
@@ -90,7 +90,7 @@
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="1">
-         <widget class="QComboBox" name="comboBox">
+         <widget class="QComboBox" name="cb_variable">
           <property name="minimumSize">
            <size>
             <width>300</width>
@@ -135,12 +135,15 @@
        </property>
        <layout class="QGridLayout" name="gridLayout_5">
         <item row="0" column="0">
-         <widget class="QCheckBox" name="check_opc">
+         <widget class="QCheckBox" name="check_barras">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="layoutDirection">
+           <enum>Qt::LeftToRight</enum>
           </property>
           <property name="text">
            <string>Gráfica de barras</string>

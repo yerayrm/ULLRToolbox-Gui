@@ -52,7 +52,7 @@
          <widget class="QPushButton" name="pushMultiSelector">
           <property name="minimumSize">
            <size>
-            <width>10</width>
+            <width>30</width>
             <height>0</height>
            </size>
           </property>
@@ -135,14 +135,14 @@
        </property>
        <layout class="QGridLayout" name="gridLayout_5">
         <item row="0" column="0">
-         <widget class="QCheckBox" name="checkopc_tras">
+         <widget class="QCheckBox" name="check_tras">
           <property name="text">
            <string>Traspuesta (variables en columnas)</string>
           </property>
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QCheckBox" name="check_opt_simple">
+         <widget class="QCheckBox" name="check_simple">
           <property name="text">
            <string>Simple (muestra solo la media, dt y n)</string>
           </property>
