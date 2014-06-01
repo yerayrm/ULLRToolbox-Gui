@@ -7,15 +7,7 @@ class FncArchivo():
 	#Constructor
 	def __init__(self, ui):
 		self.ui = ui
-
-		# set icon to actions
-		self.ui.act_abrir_archivo.setIcon(QtGui.QIcon('./resources/openIcon.png'))
-		self.ui.act_guardar_archivo.setIcon(QtGui.QIcon('./resources/saveIcon.png'))
-
-		# add to toolBar
-		self.ui.toolBar.addAction(self.ui.act_abrir_archivo)
-		self.ui.toolBar.addAction(self.ui.act_guardar_archivo)
-
+		
 		# signals
 		QtCore.QObject.connect(self.ui.act_abrir_archivo, QtCore.SIGNAL("triggered()"), self.abrirArchivo)
 		QtCore.QObject.connect(self.ui.act_guardar_archivo, QtCore.SIGNAL("triggered()"), self.guardarArchivo)

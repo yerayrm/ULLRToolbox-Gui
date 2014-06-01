@@ -14,6 +14,9 @@ class MainWindow():
 		QtCore.QObject.connect(timer, QtCore.SIGNAL("timeout()"), self.update)
 		timer.start(1000)
 
+		# toolbar
+		self.setToolbar()
+
 		# signals in main window
 		QtCore.QObject.connect(self.ui.button_ejecutar, QtCore.SIGNAL("clicked()"), self.insertCommand)
 		QtCore.QObject.connect(self.ui.button_clean, QtCore.SIGNAL("clicked()"), self.cleanConsole)
@@ -31,6 +34,77 @@ class MainWindow():
 
 	def update(self):
 		rinterface.process_revents()
+
+
+
+	def setToolbar(self):
+		# abrir archivo
+		self.ui.act_abrir_archivo.setIcon(QtGui.QIcon('./resources/open.png'))
+		self.ui.toolBar.addAction(self.ui.act_abrir_archivo)
+
+		# guardar
+		self.ui.act_guardar_archivo.setIcon(QtGui.QIcon('./resources/save.png'))
+		self.ui.toolBar.addAction(self.ui.act_guardar_archivo)
+
+		############# separador
+		self.ui.toolBar.addSeparator()
+
+		# nueva variable
+		btn_variable = QtGui.QToolButton()
+		btn_variable.setIcon(QtGui.QIcon('./resources/variable.png'))
+		btn_variable.setMenu(self.ui.menuCrear_nueva)
+		btn_variable.setPopupMode(QtGui.QToolButton.InstantPopup)
+		self.ui.toolBar.addWidget(btn_variable)
+
+		# agregado
+		self.ui.act_agregado.setIcon(QtGui.QIcon('./resources/agregado.png'))
+		self.ui.toolBar.addAction(self.ui.act_agregado)
+
+		# segmentado
+		self.ui.act_segmentado.setIcon(QtGui.QIcon('./resources/segmentado.png'))
+		self.ui.toolBar.addAction(self.ui.act_segmentado)
+
+		# extraer muestra
+		self.ui.act_extraer_mues.setIcon(QtGui.QIcon('./resources/extraer_muestra.png'))
+		self.ui.toolBar.addAction(self.ui.act_extraer_mues)
+
+		# transformar
+		self.ui.act_transformar.setIcon(QtGui.QIcon('./resources/transformar.png'))
+		self.ui.toolBar.addAction(self.ui.act_transformar)
+
+		############# separador
+		self.ui.toolBar.addSeparator()
+
+		# estadisticos descriptivos
+		btn_variable = QtGui.QToolButton()
+		btn_variable.setIcon(QtGui.QIcon('./resources/estadisticos_desc.png'))
+		btn_variable.setMenu(self.ui.mnu_descriptiva)
+		btn_variable.setPopupMode(QtGui.QToolButton.InstantPopup)
+		self.ui.toolBar.addWidget(btn_variable)
+
+		# contraste de medias
+		btn_variable = QtGui.QToolButton()
+		btn_variable.setIcon(QtGui.QIcon('./resources/contraste_medias.png'))
+		btn_variable.setMenu(self.ui.mnu_contraste)
+		btn_variable.setPopupMode(QtGui.QToolButton.InstantPopup)
+		self.ui.toolBar.addWidget(btn_variable)
+
+		# anova
+		btn_variable = QtGui.QToolButton()
+		btn_variable.setIcon(QtGui.QIcon('./resources/anova.png'))
+		btn_variable.setMenu(self.ui.mnu_anova)
+		btn_variable.setPopupMode(QtGui.QToolButton.InstantPopup)
+		self.ui.toolBar.addWidget(btn_variable)
+
+		############# separador
+		self.ui.toolBar.addSeparator()
+
+		# graficos
+		btn_graficos = QtGui.QToolButton()
+		btn_graficos.setIcon(QtGui.QIcon('./resources/graficas.png'))
+		btn_graficos.setMenu(self.ui.mnu_graficos)
+		btn_graficos.setPopupMode(QtGui.QToolButton.InstantPopup)
+		self.ui.toolBar.addWidget(btn_graficos)
 
 
 
