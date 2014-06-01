@@ -84,7 +84,7 @@ def main(argv=None):
     fncAnlsCorrelacion  = FncAnlsCorrelacion(ui, d_correlacion, d_multiselector, d_multiselector_2)
     fncAnlsContraste    = FncAnlsContraste(ui, d_contr_inter, d_contr_intra, d_multiselector)
     fncAnlsAnova        = FncAnlsAnova(ui, d_anova_inter, d_anova_intra, d_anova_split, d_multiselector)
-    fncAnlsRegresion    = FncAnlsRegresion(ui, d_regr_multiple, d_regr_mediacion)
+    fncAnlsRegresion    = FncAnlsRegresion(ui, d_regr_multiple, d_regr_mediacion, d_multiselector)
 
     # inicio el programa
     ui.setWindowTitle("ULLRToolbox")
