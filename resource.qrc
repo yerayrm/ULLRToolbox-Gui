@@ -31,5 +31,6 @@
         <file alias="anova_split_dialog">forms/analisis_anova_split.ui</file>
         <file alias="regr_mediacion_dialog">forms/analisis_regr_mediacion.ui</file>
         <file alias="regr_multiple_dialog">forms/analisis_regr_multiple.ui</file>
+        <file alias="sobre_nosotros_dialog">forms/sobre_nosotros.ui</file>
     </qresource>
 </RCC>

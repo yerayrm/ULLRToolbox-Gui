@@ -6,8 +6,9 @@ import sys
 class MainWindow():
 
 	# Constructor
-	def __init__(self, ui):
+	def __init__(self, ui, d_sobre):
 		self.ui = ui
+		self.d_sobre = d_sobre
 
 		timer = QtCore.QTimer(self.ui)
 		QtCore.QObject.connect(timer, QtCore.SIGNAL("timeout()"), self.update)
@@ -15,6 +16,8 @@ class MainWindow():
 
 		# signals in main window
 		QtCore.QObject.connect(self.ui.button_ejecutar, QtCore.SIGNAL("clicked()"), self.insertCommand)
+		QtCore.QObject.connect(self.ui.button_clean, QtCore.SIGNAL("clicked()"), self.cleanConsole)
+		QtCore.QObject.connect(self.ui.act_sobre, QtCore.SIGNAL("triggered()"), self.openSobre)
 
 		# capture key event
 		self.keyPressEater = QTextEditCustom(self.ui)
@@ -67,6 +70,9 @@ class MainWindow():
 		rinterface.set_writeconsole(rinterface.consolePrint)
 
 
+	def cleanConsole(self):
+		self.ui.text_result.clear()
+
 
 	# Initialize a QTableWidget when the program is open
 	def initTable(self):
@@ -81,4 +87,10 @@ class MainWindow():
 			header = "Var " + str(ind)
 			newItem = QtGui.QTableWidgetItem(header)
 			self.ui.tableWidget.setHorizontalHeaderItem(i, newItem)
+
+
+	def openSobre(self):
+		self.dialogUi = self.d_sobre
+		self.dialogUi.setWindowTitle("Sobre ULLRToolbox")
+		self.dialogUi.show()
 

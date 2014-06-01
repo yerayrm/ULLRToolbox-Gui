@@ -34,7 +34,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_datos">
        <attribute name="title">
@@ -303,7 +303,7 @@
     <property name="title">
      <string>Acerca de</string>
     </property>
-    <addaction name="act_sobre_"/>
+    <addaction name="act_sobre"/>
    </widget>
    <addaction name="mnu_archivo"/>
    <addaction name="mnu_datos"/>
@@ -364,7 +364,7 @@
     <string>Análisis multivariado</string>
    </property>
   </action>
-  <action name="act_sobre_">
+  <action name="act_sobre">
    <property name="text">
     <string>Sobre ULLRToolbox</string>
    </property>

@@ -66,9 +66,10 @@ def main(argv=None):
     d_anova_split       = loader.load(':/anova_split_dialog')
     d_regr_multiple     = loader.load(':/regr_multiple_dialog')
     d_regr_mediacion    = loader.load(':/regr_mediacion_dialog')
+    d_sobre             = loader.load(':/sobre_nosotros_dialog')
 
     # instancio el mainwindow
-    mWindow             = MainWindow(ui)
+    mWindow             = MainWindow(ui, d_sobre)
     fncArchivo          = FncArchivo(ui)
     fndDatosAgregado    = FncDatosAgregado(ui, d_agregado)
     fncDatosSegmentado  = FncDatosSegmentado(ui, d_segmentado)
