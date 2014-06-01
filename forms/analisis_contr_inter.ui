@@ -52,7 +52,7 @@
          <widget class="QPushButton" name="pushMultiSelector">
           <property name="minimumSize">
            <size>
-            <width>10</width>
+            <width>30</width>
             <height>0</height>
            </size>
           </property>
@@ -135,9 +135,9 @@
        </property>
        <layout class="QGridLayout" name="gridLayout_5">
         <item row="0" column="0">
-         <widget class="QCheckBox" name="check_opc">
+         <widget class="QCheckBox" name="check_cajas">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>

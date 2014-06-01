@@ -23,7 +23,7 @@
        </property>
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="0" column="1">
-         <widget class="QComboBox" name="comboBox">
+         <widget class="QComboBox" name="cb_variable">
           <property name="minimumSize">
            <size>
             <width>300</width>
@@ -81,7 +81,7 @@
          </spacer>
         </item>
         <item row="0" column="1">
-         <widget class="QRadioButton" name="radioButton">
+         <widget class="QRadioButton" name="rb_tipo2">
           <property name="minimumSize">
            <size>
             <width>130</width>
@@ -94,7 +94,7 @@
          </widget>
         </item>
         <item row="0" column="2">
-         <widget class="QRadioButton" name="radioButton_2">
+         <widget class="QRadioButton" name="rb_tipo3">
           <property name="minimumSize">
            <size>
             <width>130</width>
