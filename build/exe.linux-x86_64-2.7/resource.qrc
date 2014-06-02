@@ -1,0 +1,36 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="mainwindow">forms/mainwindow.ui</file>
+        <file alias="logo64">resources/logo64x64.png</file>
+        <file alias="logo32">resources/logo32x32.png</file>
+        <file alias="logo128">resources/logo128x128.png</file>
+        <file alias="logo512">resources/logo512x512.png</file>
+        <file alias="agregado_dialog">forms/agregado.ui</file>
+        <file alias="segmentado_dialog">forms/segmentado.ui</file>
+        <file alias="crear_variable_existente">forms/crearvariable_existente.ui</file>
+        <file alias="multiselect_column">forms/multiselect_column.ui</file>
+        <file alias="crear_variable_funcion">forms/crearvariable_funcion.ui</file>
+        <file alias="crear_variable_algoritmo">forms/crearvariable_algoritmo.ui</file>
+        <file alias="discretizar_dialog">forms/discretizar.ui</file>
+        <file alias="tipificar_dialog">forms/tipificar.ui</file>
+        <file alias="transformar_dialog">forms/transformar.ui</file>
+        <file alias="recodificar_dialog">forms/recodificar.ui</file>
+        <file alias="muestra_dialog">forms/extraer_muestras.ui</file>
+        <file alias="cajas_dialog">forms/graf_cajas.ui</file>
+        <file alias="dispersion_dialog">forms/graf_dispersion.ui</file>
+        <file alias="frecuencias_dialog">forms/graf_frecuencias.ui</file>
+        <file alias="histograma_dialog">forms/graf_histograma.ui</file>
+        <file alias="percentiles_dialog">forms/graf_percentiles.ui</file>
+        <file alias="contr_intra_dialog">forms/analisis_contr_intra.ui</file>
+        <file alias="contr_inter_dialog">forms/analisis_contr_inter.ui</file>
+        <file alias="correlacion_dialog">forms/analisis_correlacion.ui</file>
+        <file alias="descr_multiple_dialog">forms/analisis_descr_multiple.ui</file>
+        <file alias="descr_univar_dialog">forms/analisis_descr_univar.ui</file>
+        <file alias="anova_inter_dialog">forms/analisis_anova_inter.ui</file>
+        <file alias="anova_intra_dialog">forms/analisis_anova_intra.ui</file>
+        <file alias="anova_split_dialog">forms/analisis_anova_split.ui</file>
+        <file alias="regr_mediacion_dialog">forms/analisis_regr_mediacion.ui</file>
+        <file alias="regr_multiple_dialog">forms/analisis_regr_multiple.ui</file>
+        <file alias="sobre_nosotros_dialog">forms/sobre_nosotros.ui</file>
+    </qresource>
+</RCC>
