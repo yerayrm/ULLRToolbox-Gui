@@ -2,7 +2,7 @@ import sys
 from cx_Freeze import setup, Executable
 
 # Dependencies are automatically detected, but it might need fine tuning.
-build_exe_options = {"packages": [	"os", "sys", "PySide.QtGui", "PySide.QtXml", "PySide.QtCore", "PySide.QtUiTools"],
+build_exe_options = {"packages": [	"os", "sys", "PySide.QtGui", "PySide.QtXml", "PySide.QtCore", "PySide.QtUiTools", "rpy2.rinterface", "time", "threading"],
 					 "include_files": [("./forms/agregado.ui", "forms/agregado.ui"), 
 									 ("./forms/analisis_anova_inter.ui", "forms/analisis_anova_inter.ui"), 
 									 ("./forms/analisis_anova_intra.ui", "forms/analisis_anova_intra.ui"), 
