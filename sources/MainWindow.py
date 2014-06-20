@@ -12,7 +12,7 @@ class MainWindow():
 
 		timer = QtCore.QTimer(self.ui)
 		QtCore.QObject.connect(timer, QtCore.SIGNAL("timeout()"), self.update)
-		timer.start(1000)
+		timer.start(50)
 
 		# toolbar
 		self.setToolbar()
